@@ -1,0 +1,3100 @@
+---
+title: 'Reconsolidation-based Episodic Memory Updating - Experiment 1'
+author: "Taehoon Kim, Do-Joon Yi"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: hide
+    highlight: tango
+    number_sections: true
+    theme: cosmo
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapse: false
+      smooth_scroll: false
+  pdf_document:
+    toc: true
+    toc_depth: 5
+subtitle: MA-Thesis, Non-monotonic Effect of Prediction Error
+mainfont: Noto Sans CJK KR
+editor_options: 
+  chunk_output_type: console
+---
+  
+```{r, echo=FALSE}
+rm(list=ls())
+currDir=getwd()
+currDir='/Users/taehoonkim/Desktop/Workspace/curr/Exp1'
+setwd(currDir)
+options(scipen=4)
+```
+
+```{css, echo=FALSE}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+
+```{r setup, message=FALSE}
+set.seed(12345) # for reproducibility
+options(knitr.kable.NA = '')
+
+# Some packages need to be loaded. We use `pacman` as a package manager, which takes care of the other packages. 
+if (!require("pacman", quietly = TRUE)) install.packages("pacman")
+if (!require("Rmisc", quietly = TRUE)) install.packages("Rmisc") # Never load it directly.
+# if (!require("kableExtra", quietly = TRUE)) install.packages("kableExtra") # Never load it directly.
+
+pacman::p_load(tidyverse, papaja, knitr, ggplot2, car, lme4, afex, emmeans, parallel, ordinal, psych, gridExtra, ggbeeswarm, RVAideMemoire, apaTables, scales, matlab, rcompanion, nortest, psycho, ggpubr, MuMIn)
+devtools::install_github("thomasp85/patchwork")
+remotes::install_github("rlesur/klippy")
+library("patchwork"); library("klippy")
+klippy::klippy()
+```
+
+  
+# 방법
+  
+<br>
+  
+## 참가자 
+  
+<br>
+  
+정상 시력의 학부생 및 대학원생 16명(여 8명, 평균 연령 25.56세, 표 준 편차 2.15세)이 인터넷을 통해 모집되어 예비 실험에 참여하였다. 참가자들은 실 험에 앞서 서면으로 작성된 실험 참가 동의서에 서명하였으며, 3일간 진행되는 2시간 30분의 실험에 참여하여 25,000원 상당의 문화상품권을 참가 보상으로 수령하였다.
+
+<br>
+  
+## 장치 및 자극
+  
+<br>
+  
+  예비 실험의 자극 제시 및 반응 수집은 Psychophysics Toolbox-3을 사용한 Matlab 스크립트에 의해 제어되었다(Brainard, 1997; Pelli, 1997; Kleiner, Brainard, & Pelli, 2007). 실험 화면은 해상도 1920 × 1080, 주사율 60Hz인 Dell 22인치 LCD 모니터를 이용해 제시되었다. 참가자들의 머리는 턱-이마 받침대를 통해 고정되었으며, 참가자의 눈과 모니터 사이의 거리는 63cm였다. 참가자의 반응은 반응 상자(DirectIN High Speed Button-Box; EmpiriSoft Corp.)를 사용하여 기록하였다.
+
+<br>
+
+  기억 자극으로 인터넷과 장기 기억 실험을 위해 구성된 물체 자극(Brady, Konkle, Alvarez, & Oliva, 2008)에서 수집된 240개의 물체 그림이 사용되었다. 물체(7.21° × 7.21°)는 색을 회색조로 조정한 후 각 회기에 제시되는 세 개의 물체 목록(목록 1, 첫 회기에 학습; 목록 2, 두 번째 회기에 학습; 목록 3, 출처 기억 검사에 활용)에 80개씩 무선 할당되었다. 이어서 학습이 이루어지는 물체 목록(목록 1과 목록 2)에서 네 개의 하위 연합 기억을 형성하기 위해 네 가지 색을 사용한 연합 색 상자 자극(11.98° × 11.98°)을 구성하였다. 네 가지 색은 주황색[RGB 237, 125, 39], 노란색[255, 192, 0], 파란색[90, 155, 213], 초록색[112, 173, 70]으로 설정되었다. 목록 1과 목록 2의 물체 80개는 네 가지 색에 20개씩 무작위로 할당되었다. 이에 따라 총 세 개의 물체 목록이 구성되었으며, 이 중 두 개의 물체 목록(목록 1, 목록 2)에서는 네 개의 하위 물체 목록이 구분되었다.
+
+<br>
+  
+## 실험 설계와 절차
+  
+<br> 
+
+예비 실험은 2(집단: 실험 집단, 통제 집단) × 4(예측 오류: 0%-PE 1, 30%-PE 2, 70%-PE 3, 100%-PE 4)의 혼합 요인 설계로 진행되었다. 전체적인 실험 절차와 과제는 그림 1과 같다. 실험은 별도로 준비된 실험실에서 24~48시간의 간격으로 3일간 진행되었다. 
+
+<br>
+
+![](/Users/taehoonkim/Desktop/Workspace/curr/Exp1/Exp1_Procedure.png)
+
+<br>
+
+  첫째 날은 물체 80개의 목록 1을 학습하는 과제와 검사하는 과제로 구성되었다(그림 1B). 학습 과제는 물체 자체, 물체와 네 가지 색 간의 연합을 학습하는 연합 학습 과제로, 목록 1의 모든 물체가 네 가지 색과 각각 연합되어 제시되었다. 각 시행에서는 물체와 연합될 네 가지 색 상자 중 하나가 500ms 동안 제시된 후, 색 상자 위에 물체가 2500ms 동안 함께 제시되었다. 참가자들은 별도의 버튼 반응 없이 물체 자체와 물체-색 간의 연합을 외우도록 지시받았다. 학습 과제가 끝나면 지시문 화면이 제시되고 검사 과제가 시작되었다. 검사 과제는 학습한 물체를 상기하고 물체-색 연합 학습 수행 결과를 확인하기 위한 연합 검사 과제였다. 각 시행에서는 학습 과제에서 제시된 목록 1의 물체와 네 가지 색 선택지가 2000ms 동안 제시되었다. 참가자들은 이전에 학습한 물체를 상기하고 물체와 연합되었던 색을 버튼을 눌러 반응하도록 지시받았다. 참가자가 버튼을 누르거나 화면 제시 후 2000ms가 지나면 피드백 화면이 1000ms 동안 제시되었다. 참가자들이 자신의 반응을 점검할 수 있도록 피드백 화면에는 반응이 맞았는지 틀렸는지 여부와 정답이 무엇인지가 함께 제시되었다. 모든 검사 시행이 끝나면 1분의 휴식 시간이 주어졌다. 휴식 시간에는 검사에서의 정확도와 평균 반응시간을 제시하여 참가자들이 학습 의지를 고취할 수 있도록 유도하였다. 물체 자체와 물체와 색 간의 연합에 대한 견고한 기억을 형성하기 위하여 연합 학습 및 검사 과제는 총 네 번 반복 수행되었다. 각 과제 내의 개별적인 시행 순서는 무작위로 설정되었다. 모든 과제 수행에는 약 50분이 소요되었다.
+  
+<br>
+  
+  둘째 날의 실험은 목록 1 재활성화 과제, 작업 기억 과제, 새로운 물체 80개로 구성된 목록 2 연합 학습 및 검사 과제로 구성되었다(그림 1B와 1C). 각 과제의 수행 순서는 집단에 따라 조작되었다. 구체적으로, 실험 집단은 목록 1 재활성화 과제, 작업 기억 과제, 목록 2 연합 학습 및 검사 과제의 순서로 과제를 수행하였고, 통제 집단은 목록 2 연합 학습 및 검사 과제, 작업 기억 과제, 재활성화 과제의 순서로 과제를 수행하였다(그림 1A).
+  
+<br>
+  
+  실험 집단에서는 재응고를 유도하기 위해 목록 1 재활성화 과제부터 수행되었다. 과제는 첫째 날 학습한 목록 1의 물체, 물체-색 연합에 대한 기억을 재활성화하기 위한 과제로, 연합 학습 과제와 유사한 절차로 진행되었다. 참가자들은 색과 이에 연합되었던 물체를 보며 첫날의 기억을 상기하도록 지시받았다. 기억 재활성화 중의 예측 오류 정도를 조절하기 위해, 목록 1에 포함된 네 가지 연합 기억에서 예측 오류의 조작을 다르게 적용하였다. 예측 오류의 조작은 각 연합 기억(색)에 할당된 20회의 시행에서 일반 시행과 예측 오류 시행의 비율로 조절되었다. 일반 시행은 제시된 색으로부터 예측되는 물체가 온전히 등장하는 시행이었던 반면, 예측 오류 시행은 색으로부터 예측되는 물체가 생략되고, 잡음 이미지만 등장하는 시행이었다. 잡음 이미지는 시각적 입력이 유사하게 유지될 수 있도록 원래 물체 이미지가 픽셀 단위로 섞인 이미지로 구성되었다. 네 가지 예측 오류 조건은 예측 오류 시행이 0%(0 시행)인 PE 1 조건, 예측 오류 시행이 30%(6 시행)인 PE 2 조건, 예측 오류 시행이 70%(14 시행)인 PE 3 조건, 마지막으로 모든 시행(100%; 20 시행)이 예측 오류 시행으로 구성된 PE 4 조건으로 구분되었다. 시행이 시작되면 500ms 동안 응시점이 제시된 후, 1000ms 동안 네 가지 색 중 하나가 먼저 제시되어 연합된 물체에 대한 재활성화가 유도되었다. 이어서 색에 할당된 예측 오류 조건에 따라 일반 시행과 예측 오류 시행으로 구분되어 물체 또는 잡음 이미지가 2500ms 동안 제시되었다. 모든 조건의 시행은 무작위의 순서로 진행되었다. 과제가 끝나면 참가자들의 암송을 방지하고 재응고 과정에서 발생하는 시냅스 불안정화가 충분히 이루어지도록 유도하기 위해(Monfils, Cowansage, Klann, & LeDoux, 2009; Schiller et al., 2010; Sinclair et al., 2018), 작업 기억 과제가 진행되었다. 과제는 다섯 자리의 수를 암송하였다가 이어서 제시되는 자릿수의 수가 짝수인지 홀수인지 반응하는 는 것으로, 15 시행의 두 개 블록으로 약 5분간 진행되었다. 작업 기억 과제가 끝난 후, 간섭 학습 과제로 목록 2의 연합 학습 및 검사 과제가 진행되었다. 과제의 절차는 제시되는 물체를 제외하고 목록 1 연합 학습 및 검사 과제와 동일하였다. 학습 과제에서 목록 2의 물체 80개는 이전 과제와 동일한 색에 20개씩 연합되었다. 이후 검사 과제에서 이 연합이 잘 형성되었는지 검사하였다. 견고한 기억을 형성하기 위해 학습 및 검사는 총 네 번 반복 수행되었다. 통제 집단의 절차는 각 과제의 수행 순서를 제외하고 실험 집단과 동일하였다. 구체적으로, 간섭 과제로 목록 2 연합 학습 및 검사 과제를 먼저 수행한 후, 작업 기억 과제와 목록 1 재활성화 과제를 수행하였다. 모든 과제 수행에는 약 60분의 시간이 소요되었다.
+  
+<br>
+  
+  마지막 날에 참가자들은 출처 기억 및 연합 기억 검사를 수행하였다. 과제에는 첫째 날 학습한 목록 1, 둘째 날 학습한 목록 2와 학습하지 않은 목록 3의 물체 80개가 함께 제시되어 총 240개의 물체가 사용되었다. 시행이 시작되면 먼저 물체의 이미지가 제시되었다. 참가자들은 제시된 물체를 언제 학습하였는지(첫째 날, 둘째 날, 학습하지 않음) 반응한 후, 이에 대한 확신도를 1점(매우 불확실)에서 4점(매우 확실)의 척도로 응답하였다. 이어서 물체를 학습한 것으로 반응한 경우, 해당 물체와 연합되었던 색을 검사하였다. 또한 색 반응에 대한 확신도도 동일하게 1점에서 4점 척도로 수집하였다. 모든 시행은 특정한 제한 시간 없이 진행되었다. 과제가 끝나면 실험 과제에 대한 피드백을 받은 후 사후설명과 참가비를 제공하였다.
+
+<br>
+  
+## 통계 분석
+  
+<br>
+
+예비 실험은 실험 패러다임의 타당화와 연구 목표 검증의 가능성을 확인하기 위하여 적은 참가자 수로 수행되었다. 따라서 모든 측정치를 분석하지 않고 연합 기억 학습 수행과 셋째 날의 출처 및 연합 기억 검사 결과의 일부만 분석하였다. 적은 참가자 수를 고려하여 분석 결과의 기술통계를 표로 제시하였다. 이어서 기술 통계 결과를 보완하고 기억 갱신 효과의 경향성을 확인하기 위해 잠정적인 통계 분석을 수행하였다. 모든 분석은 R(R Core Team, 2019) 프로그램을 사용하여 수행되었다. 먼저 목록 1과 목록 2의 기억이 성공적으로 형성되었는지 확인하기 위해 두 물체 목록의 연합 기억 정확도와 반응시간을 분석하였다. 반응시간에서는 가외치를 제거하기 위하여 150ms보다 빠르거나, 참가자 별 반응시간 분포의 평균으로부터 3 표준편차를 벗어난 시행을 제거하였다. 연합 기억 과제의 정확도와 반응 시간에서 집단 간 차이, 목록 간 차이가 있는지 비교하였다. 
+
+<br>
+
+  셋째 날의 출처 기억 반응은 여러 종속 변인으로 구분되어 분석되었다. 주요 종속 변인은 첫째 날 학습한 물체 목록을 첫째 날 학습한 것으로 옳게 분류한 목록 1 정확반응(List 1 Correct, L1→D1), 둘째 날 학습한 물체 목록을 둘째 날 학습한 것으로 옳게 분류한 목록 2 정확반응(List 2 Correct, L2→D2), 첫째 날 학습한 물체를 둘째 날 학습한 것으로 잘못 분류한 출처 혼동(Source Confusion, L1→D2), 둘째 날 학습한 물체를 첫째 날 학습한 것으로 잘못 분류한 침범(Intrusion, L2→D1)의 네 가지였다. 이 외에, 목록 3과 관련된 변인으로 목록 3을 학습하지 않은 것으로 옳게 분류한 목록 3 정확반응(List 3 Correct, L3→New), 목록 3을 학습한 것으로 잘못 분류한 목록 3 오경보 1과 2(List 3 False Alarm - Day 1&2, L3→D1&2), 목록 1과 2를 학습하지 않은 것으로 잘못 분류한 누락(Miss, L1&2→New)을 측정하였다. 이어서 연합 기억이 셋째 날까지 잘 유지되었는지 확인하기 위해 각 집단, 물체 목록에서 연합 기억 정확도를 분석하였다. 모든 추론 통계 분석은 혼합 요인 분산 분석 및 Tukey의 짝 비교 사후 검정 방법을 통해 수행되었으며, Mauchly(1940)의 구형성 검증에서 구형성 가정이 충족되지 않으면 Greenhouse-Geisser(1959)의 교정된 자유도 상수를 사용하였다. 
+
+<br><br>
+  
+****
+  
+<br><br>
+  
+# 결과
+  
+<br>
+  
+## 목록 1, 목록 2의 연합 학습 수행
+  
+<br>
+  
+학습 및 검사 절차를 통해 물체-색 연합의 기억이 안정적으로 형성되었는지 확인하기 위해, 각 집단에서 연합 기억 정확도와 반응 시간의 변화를 블록 반복에 따라 분석하였다.
+
+<br><br>
+  
+### 목록 1 정확도 및 반응시간
+  
+```{r, collapse=TRUE}
+
+p1 <- read.csv("MemUdt_PE_d1t2_p.csv", header = T) 
+
+p1$SN = factor(p1$SN); p1$Btw = factor(p1$Btw)
+p1$Block = factor(p1$Block, levels=c(1,2,3,4), labels=c("b1","b2","b3","b4"))
+p1$cCue = factor(p1$cCue, levels=c(1,2,3,4), labels=c("c1","c2","c3", "c4"))
+p1$CueName = factor(p1$CueName, labels=c("c1","c2","c3", "c4"))
+p1$RT <- p1$RT*1000; p1$Corr <- as.numeric(p1$Corr==1)
+
+glimpse(p1, width=70)
+
+# 1. SN: participant ID
+# 2. Btw: between-participants factor. 1-experimental group, 2-control group
+# 3. Trial: 1 ~ 320
+# 4. Block: b1 ~ b4
+# 5. bTrial: 1 ~ 80
+# 6. cCue: association color cue condition. 1-c1, 2-c2, 3-c3, 4-c4
+# 7. IMidx: index of stimuli
+# 8. IMname: name of stimuli
+# 9. CueName: name of color cue
+# 10. Resp: association color cue response
+# 11. RT: association color cue response time
+# 12. Corr: color cue response correctness. 1-correct, 0-incorrect
+
+length(unique(p1$SN))
+length(unique(p1$SN[p1$Btw==1]))
+length(unique(p1$SN[p1$Btw==2]))
+table(p1$SN)
+
+```
+
+<br>
+  
+#### 정확도 (Accuracy)
+  
+<br>
+  
+```{r, fig.width= 18, fig.height=6}
+# phase 1, subject-level, long-format
+p1.L.long.all <- p1 %>% group_by(SN, Btw, Block) %>% 
+  summarise(Accuracy = mean(Corr)*100) %>% ungroup()
+p1.L.long.exp <- p1.L.long.all %>% filter(Btw == 1)
+p1.L.long.con <- p1.L.long.all %>% filter(Btw == 2) 
+
+# wide format, needed for geom_segments.
+p1.L.swide.all <- p1.L.long.all %>% spread(key = Block, value = Accuracy)
+p1.L.swide.exp <- p1.L.swide.all %>% filter(Btw == 1)
+p1.L.swide.con <- p1.L.swide.all %>% filter(Btw == 2)
+
+
+# summary table
+p1.L.g.all <- p1.L.long.all %>% group_by(Btw, Block) %>%
+  summarise(Acc.M = mean(Accuracy), SD = sd(Accuracy)) %>% ungroup()
+p1.L.g.all$se <- Rmisc::summarySEwithin(data = p1.L.long.all, measurevar = "Accuracy", idvar = "SN", betweenvars ="Btw", withinvars = "Block")$se
+p1.L.g.all$ci <- Rmisc::summarySEwithin(data = p1.L.long.all, measurevar = "Accuracy", idvar = "SN", betweenvars ="Btw", withinvars = "Block")$ci
+p1.L.g.exp <- p1.L.g.all %>% filter(Btw == 1)
+p1.L.g.con <- p1.L.g.all %>% filter(Btw == 2)
+p1.L.g.all %>% kable()
+
+## plot
+
+p1.all.plot1 <- ggplot(p1.L.g.all, mapping=aes(x=Block, y=Acc.M, group=Btw)) + 
+  geom_ribbon(p1.L.g.all, mapping=aes(x=Block, ymin=Acc.M-ci, ymax=Acc.M+ci, fill=Btw), alpha=0.5) + 
+  geom_line(p1.L.g.all, mapping=aes(x=Block, y=Acc.M, color=Btw), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = Block, ymin=Acc.M-ci, ymax=Acc.M+ci, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("#feb24c", "#91bfdb"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#feb24c", "#91bfdb")) +
+  coord_cartesian(ylim = c(25, 105), clip = "on") +
+  labs(x = "Block", y = "Accuracy (%)", fill="Group") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 Association Memory (All Group)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position="top")
+p1.exp.plot1 <- ggplot(p1.L.g.exp, mapping=aes(x=Block, y=Acc.M, group=1)) + 
+  geom_ribbon(aes(ymin=Acc.M-ci, ymax=Acc.M+ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = Block, ymin=Acc.M-ci, ymax=Acc.M+ci), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p1.L.long.exp, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=Block, y=Accuracy, group=SN, color=SN)) +
+  geom_point(p1.L.long.exp, mapping = aes(x=Block, y=Accuracy, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(25, 105), clip = "on") +
+  labs(x = "Block", y = "Accuracy (%)") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 Association Memory (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+p1.con.plot1 <- ggplot(p1.L.g.con, mapping=aes(x=Block, y=Acc.M, group=1)) + 
+  geom_ribbon(aes(ymin=Acc.M-ci, ymax=Acc.M+ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = Block, ymin=Acc.M-ci, ymax=Acc.M+ci), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p1.L.long.con, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=Block, y=Accuracy, group=SN, color=SN)) +
+  geom_point(p1.L.long.con, mapping = aes(x=Block, y=Accuracy, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(25, 105), clip = "on") +
+  labs(x = "Block", y = "Accuracy (%)") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 Association Memory (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+
+ggpubr::ggarrange(p1.all.plot1, p1.exp.plot1, p1.con.plot1, ncol=3, labels=c("A) All Group","B) Experimental","C) Control"))
+
+```
+
+<br>
+  
+##### 혼합 요인 분산 분석
+  
+<br>
+  
+집단과 블록을 요인으로 한 2 X 4 혼합 요인 분산 분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p1.acc.aov <- aov_ez(id = "SN", dv = "Accuracy", data = p1.L.long.all, between = "Btw", within = "Block")
+# test_levene(p1.acc.aov) 
+# test_sphericity(p1.acc.aov)
+anova(p1.acc.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 블록의 주효과가 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p1.acc.m1 <- emmeans(p1.acc.aov, pairwise ~ Block | Btw, type = "response") # adjust="bon"
+p1.acc.m1$contrasts %>% kable(digits=3)
+```
+
+집단에서의 블록 차이를 사후 분석한 결과, 두 집단 모두 블록 반복에 따라 정확도가 향상되었다
+
+<br>
+  
+#### 반응시간 (Response Time)
+  
+<br>
+  
+목록 1 연합 기억 수행의 반응시간을 분석하였다.
+
+```{r, collapse=TRUE}
+p1.acc.trial <- p1 %>% group_by(SN) %>% 
+  summarise(Accuracy = mean(Corr)*100) %>% 
+  ungroup() %>% summarise(M = mean(Accuracy), SD = sd(Accuracy))
+
+cp1.all <- p1 %>% filter(Corr==1)
+
+sp1.all <- cp1.all %>% filter(RT > 150) %>% 
+  group_by(SN) %>% 
+  nest() %>% 
+  mutate(lbound = map(data, ~mean(.$RT)-3*sd(.$RT)),
+         ubound = map(data, ~mean(.$RT)+3*sd(.$RT))) %>% 
+  unnest(c(lbound, ubound)) %>% 
+  unnest(data) %>% 
+  ungroup() %>% 
+  mutate(Outlier = (RT < lbound)|(RT > ubound)) %>% 
+  filter(Outlier == FALSE) %>% 
+  select(SN, Btw, Block, cCue, CueName, Resp, RT, Corr, IMname)
+
+100 - 100*nrow(sp1.all)/nrow(cp1.all)
+## [1] 1.83
+
+```
+
+연합 기억 검사에서 정확하게 반응한 시행(M = `r round(p1.acc.trial$M, digits = 2)`%, SD = `r round(p1.acc.trial$SD, digits=2)`%)의 반응 시간 자료만 분석하였다. 가외치 제거 결과, 정확반응 시행의 반응시간 자료에서  `r round(100 - 100*nrow(sp1.all)/nrow(cp1.all), digits = 2)`%가 제거되었다.
+
+<br>
+
+```{r, warning=FALSE, message=FALSE}
+
+sp1.all %>% group_by(SN, Btw, Block) %>% 
+  summarise(NumTrial = length(RT)) %>% 
+  ungroup %>% 
+  group_by(Btw, Block) %>%
+  summarise(Avg = mean(NumTrial), 
+            Med = median(NumTrial), 
+            Min = min(NumTrial), 
+            Max = max(NumTrial)) %>% 
+  ungroup %>% kable(digits=3)
+
+```
+
+
+<br>
+  
+  집단 및 블록에 따른 평균 반응시간과 표준편차를 계산하였다. 두 집단 모두에서 블록 진행에 따라 연합 기억 검사의 반응시간이 향상되는 모습을 보였다. 아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 오차 막대는 95% 참가자 내 신뢰구간을 나타낸다.
+
+```{r, fig.width= 18, fig.height=6}
+# long format
+p1.L.rt.long.all <- sp1.all %>% group_by(SN, Btw, Block) %>% 
+  summarise(RT = mean(RT)) %>% 
+  ungroup()
+p1.L.rt.long.exp <- p1.L.rt.long.all %>% filter(Btw==1)
+p1.L.rt.long.con <- p1.L.rt.long.all %>% filter(Btw==2)
+
+# wide format
+p1.L.rt.swide.all <- p1.L.rt.long.all %>% spread(key = Block, value = RT)
+p1.L.rt.swide.exp <- p1.L.rt.swide.all %>% filter(Btw==1)
+p1.L.rt.swide.con <- p1.L.rt.swide.all %>% filter(Btw==2)
+
+# summary
+p1.L.rt.g.all <- p1.L.rt.long.all %>% group_by(Btw, Block) %>%
+  summarise(RT.M = mean(RT), SD = sd(RT)) %>% ungroup()
+p1.L.rt.g.all$se <- Rmisc::summarySEwithin(data = p1.L.rt.long.all, measurevar = "RT", 
+                                           idvar = "SN", betweenvars = "Btw", withinvars = "Block")$se
+p1.L.rt.g.all$ci <- Rmisc::summarySEwithin(data = p1.L.rt.long.all, measurevar = "RT", 
+                                           idvar = "SN", betweenvars = "Btw", withinvars = "Block")$ci
+p1.L.rt.g.exp <- p1.L.rt.g.all %>% filter(Btw==1)
+p1.L.rt.g.con <- p1.L.rt.g.all %>% filter(Btw==2)
+p1.L.rt.g.all %>% kable(digits=3)
+
+## plot
+p1.rt.all.plot1 <- ggplot(p1.L.rt.g.all, mapping=aes(x=Block, y=RT.M, group=Btw)) + 
+  geom_ribbon(p1.L.rt.g.all, mapping=aes(x=Block, ymin=RT.M-ci, ymax=RT.M+ci, fill=Btw), alpha=0.5) + 
+  geom_line(p1.L.rt.g.all, mapping=aes(x=Block, y=RT.M, color=Btw), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = Block, ymin=RT.M-ci, ymax=RT.M+ci, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("#feb24c", "#91bfdb"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#feb24c", "#91bfdb")) +
+  coord_cartesian(ylim = c(0, 1800), clip = "on") +
+  labs(x = "Block", y = "Response Time (ms)", fill="Group") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 Association Memory (All Group)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position="top")
+
+p1.rt.exp.plot1 <- ggplot(p1.L.rt.g.exp, mapping=aes(x=Block, y=RT.M, group=1)) + 
+  geom_ribbon(aes(ymin=RT.M-ci, ymax=RT.M+ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = Block, ymin=RT.M-ci, ymax=RT.M+ci), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p1.L.rt.long.exp, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=Block, y=RT, group=SN, color=SN)) +
+  geom_point(p1.L.rt.long.exp, mapping = aes(x=Block, y=RT, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(0, 1800), clip = "on") +
+  labs(x = "Block", y = "Response Time (ms)") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 Association Memory (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+
+p1.rt.con.plot1 <- ggplot(p1.L.rt.g.con, mapping=aes(x=Block, y=RT.M, group=1)) + 
+  geom_ribbon(aes(ymin=RT.M-ci, ymax=RT.M+ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = Block, ymin=RT.M-ci, ymax=RT.M+ci), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p1.L.rt.long.con, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=Block, y=RT, group=SN, color=SN)) +
+  geom_point(p1.L.rt.long.con, mapping = aes(x=Block, y=RT, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(0, 1800), clip = "on") +
+  labs(x = "Block", y = "Response Time (ms)") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 Association Memory (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+ggpubr::ggarrange(p1.rt.all.plot1, p1.rt.exp.plot1, p1.rt.con.plot1, ncol = 3, labels=c("A) All Group", "B) Experimental", "C) Control"))
+```
+
+<br>
+  
+##### 혼합 요인 분산 분석
+  
+<br>
+  
+반응시간에 대하여 집단과 블록을 요인으로한 2 X 4 혼합 요인 분산 분석을 수행하였다. 
+
+```{r, warning=FALSE, message=FALSE}
+p1.rt.aov <- aov_ez(id = "SN", dv = "RT", data = p1.L.rt.long.all, between = "Btw", within = "Block") 
+# test_levene(p1.rt.aov)
+# test_sphericity(p1.rt.aov)
+anova(p1.rt.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 블록 반복의 주효과와 집단과 블록의 상호작용이 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p1.rt.aov.m1 <- emmeans(p1.rt.aov, pairwise ~ Block | Btw) # adjust="bon"
+p1.rt.aov.m1$contrasts %>% kable(digits=3)
+
+p1.rt.aov.m1 <- emmeans(p1.rt.aov, pairwise ~ Btw | Block) # adjust="bon"
+p1.rt.aov.m1$contrasts %>% kable(digits=3)
+
+```
+
+사후 분석 결과, 두 집단 모두 반복에 따라 반응속도가 향상되었다. 또한 첫 번째 블록에서 통제 집단은 실험 집단보다 빠른 반응시간을 보였다.
+
+<br>
+
+  
+Day 1 연합 기억 검사의 정확도와 반응시간을 집단별로 함께 나타난 그래프는 아래와 같다.
+
+```{r exp1_fig1, fig.width = 12, fig.height = 6}
+ggpubr::ggarrange(p1.all.plot1, p1.rt.all.plot1, ncol=2, labels = c("A) Accuracy","B) Response Time"))
+```
+
+<br><br>
+  
+### 목록 2 정확도 및 반응시간
+  
+```{r, collapse=TRUE}
+
+p2 <- read.csv("MemUdt_PE_d2t5_p.csv", header = T) 
+
+p2$SN = factor(p2$SN); p2$Btw = factor(p2$Btw)
+p2$Block = factor(p2$Block, levels=c(1,2,3,4), labels=c("b1","b2","b3","b4"))
+p2$cCue = factor(p2$cCue, levels=c(1,2,3,4), labels=c("c1","c2","c3","c4"))
+p2$CueName = factor(p2$CueName, labels=c("c1","c2","c3","c4"))
+p2$RT <- p2$RT*1000; p2$Corr <- as.numeric(p2$Corr==1)
+
+glimpse(p2, width=70)
+
+# 1. SN: participant ID
+# 2. Btw: between-participants factor. 1-experimental group, 2-control group
+# 3. Trial: 1 ~ 320
+# 4. Block: b1 ~ b4
+# 5. bTrial: 1 ~ 80
+# 6. cCue: association color cue condition. 1-c1, 2-c2, 3-c3, 4-c4
+# 7. IMidx: index of stimuli
+# 8. IMname: name of stimuli
+# 9. CueName: name of color cue
+# 10. Resp: association color cue response
+# 11. RT: association color cue response time
+# 12. Corr: color cue response correctness. 1-correct, 0-incorrect
+
+length(unique(p2$SN))
+length(unique(p2$SN[p2$Btw==1]))
+length(unique(p2$SN[p2$Btw==2]))
+table(p2$SN)
+
+```
+
+<br>
+  
+#### 정확도 (Accuracy)
+  
+<br>
+  
+목록 2의 연합 학습 검사 결과에서 개별 참가자의 정확도 평균과 표준편차를 계산하였다. 첫째 날과 마찬가지로 두 집단 모두 반복 학습에 따라 정확도가 향상되었다. 아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 오차 막대는 95% 신뢰구간을 나타낸다.
+
+```{r, fig.width= 18, fig.height=6}
+# phase 1, subject-level, long-format
+p2.L.long.all <- p2 %>% group_by(SN, Btw, Block) %>% 
+  summarise(Accuracy = mean(Corr)*100) %>% ungroup()
+p2.L.long.exp <- p2.L.long.all %>% filter(Btw == 1)
+p2.L.long.con <- p2.L.long.all %>% filter(Btw == 2) 
+
+# wide format, needed for geom_segments.
+p2.L.swide.all <- p2.L.long.all %>% spread(key = Block, value = Accuracy)
+p2.L.swide.exp <- p2.L.swide.all %>% filter(Btw == 1)
+p2.L.swide.con <- p2.L.swide.all %>% filter(Btw == 2)
+
+# summary table
+p2.L.g.all <- p2.L.long.all %>% group_by(Btw, Block) %>%
+  summarise(Acc.M = mean(Accuracy), SD = sd(Accuracy)) %>% ungroup()
+p2.L.g.all$se <- Rmisc::summarySEwithin(data = p2.L.long.all, measurevar = "Accuracy", idvar = "SN", betweenvars ="Btw", withinvars = "Block")$se
+p2.L.g.all$ci <- Rmisc::summarySEwithin(data = p2.L.long.all, measurevar = "Accuracy", idvar = "SN", betweenvars ="Btw", withinvars = "Block")$ci
+p2.L.g.exp <- p2.L.g.all %>% filter(Btw == 1)
+p2.L.g.con <- p2.L.g.all %>% filter(Btw == 2)
+p2.L.g.all %>% kable(digits=3)
+
+## plot
+p2.all.plot1 <- ggplot(p2.L.g.all, mapping=aes(x=Block, y=Acc.M, group=Btw)) + 
+  geom_ribbon(p2.L.g.all, mapping=aes(x=Block, ymin=Acc.M-ci, ymax=Acc.M+ci, fill=Btw), alpha=0.5) + 
+  geom_line(p2.L.g.all, mapping=aes(x=Block, y=Acc.M, color=Btw), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = Block, ymin=Acc.M-ci, ymax=Acc.M+ci, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("#feb24c", "#91bfdb"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#feb24c", "#91bfdb")) +
+  coord_cartesian(ylim = c(25, 105), clip = "on") +
+  labs(x = "Block", y = "Accuracy (%)", fill="Group") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 2 Association Memory (All Group)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position="top")
+p2.exp.plot1 <- ggplot(p2.L.g.exp, mapping=aes(x=Block, y=Acc.M, group=1)) + 
+  geom_ribbon(aes(ymin=Acc.M-ci, ymax=Acc.M+ci), fill="darkblue", alpha=0.3) + geom_line(colour="darkblue", size = 1) +
+  geom_pointrange(aes(x = Block, ymin=Acc.M-ci, ymax=Acc.M+ci), position = position_dodge(0.65), 
+                  color = "darkblue", size = 0.8, show.legend = FALSE) +
+  geom_line(p2.L.long.exp, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=Block, y=Accuracy, group=SN, color=SN)) +
+  geom_point(p2.L.long.exp, mapping = aes(x=Block, y=Accuracy, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(25, 105), clip = "on") +
+  labs(x = "Block", y = "Accuracy (%)") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 2 Association Memory (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+p2.con.plot1 <- ggplot(p2.L.g.con, mapping=aes(x=Block, y=Acc.M, group=1)) + 
+  geom_ribbon(aes(ymin=Acc.M-ci, ymax=Acc.M+ci), fill="darkblue", alpha=0.3) + geom_line(colour="darkblue", size = 1) +
+  geom_pointrange(aes(x = Block, ymin=Acc.M-ci, ymax=Acc.M+ci), position = position_dodge(0.65), 
+                  color = "darkblue", size = 0.8, show.legend = FALSE) +
+  geom_line(p2.L.long.con, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=Block, y=Accuracy, group=SN, color=SN)) +
+  geom_point(p2.L.long.con, mapping = aes(x=Block, y=Accuracy, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(25, 105), clip = "on") +
+  labs(x = "Block", y = "Accuracy (%)") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 2 Association Memory (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+
+ggpubr::ggarrange(p2.all.plot1, p2.exp.plot1, p2.con.plot1, ncol=3, labels=c("A) All Group","B) Experimental","C) Control"))
+
+```
+
+<br>
+  
+##### 혼합 요인 분산 분석
+  
+<br>
+  
+목록 2에서 집단과 블록 반복을 요인으로 2 X 4 혼합 요인 분산분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p2.acc.aov <- aov_ez(id = "SN", dv = "Accuracy", data = p2.L.long.all, between = "Btw", within = "Block")
+# test_levene(p2.acc.aov)
+# test_sphericity(p2.acc.aov)
+anova(p2.acc.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 블록 반복의 주효과는 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p2.acc.m1 <- emmeans(p2.acc.aov, pairwise ~ Block | Btw, type = "response") # adjust="bon"
+p2.acc.m1$contrasts %>% kable(digits=3)
+```
+
+각 집단에서 블록 반복을 대상으로 한 사후분석을 수행하였다. 분석 결과, 두 집단 모두에서 블록 반복에 따른 정확도 향상이 관찰되었다. 
+
+<br><br>
+  
+#### 반응시간 (Response Time)
+  
+<br>
+  
+목록 2 연합 기억 검사의 반응시간을 분석하였다.
+
+```{r, collapse=TRUE}
+p2.acc.trial <- p2 %>% group_by(SN) %>% 
+  summarise(Accuracy = mean(Corr)*100) %>% 
+  ungroup() %>% summarise(M = mean(Accuracy), SD = sd(Accuracy))
+
+cp2.all <- p2 %>% filter(Corr==1)
+
+sp2.all <- cp2.all %>% filter(RT > 150) %>% 
+  group_by(SN) %>% 
+  nest() %>% 
+  mutate(lbound = map(data, ~mean(.$RT)-3*sd(.$RT)),
+         ubound = map(data, ~mean(.$RT)+3*sd(.$RT))) %>% 
+  unnest(c(lbound, ubound)) %>% 
+  unnest(data) %>% 
+  ungroup() %>% 
+  mutate(Outlier = (RT < lbound)|(RT > ubound)) %>% 
+  filter(Outlier == FALSE) %>% 
+  select(SN, Btw, Block, cCue, CueName, Resp, RT, Corr, IMname)
+
+100 - 100*nrow(sp2.all)/nrow(cp2.all)
+## [1] 2.15
+
+```
+
+연합 기억 검사에서 정확하게 반응한 시행(M = `r round(p2.acc.trial$M, digits = 2)`%, SD = `r round(p2.acc.trial$SD, digits=2)`%)의 반응 시간 자료만 분석하였다. 가외치(Outliers)를 제거하기 위하여 반응 시간이 150ms 보다 빠르거나, 각 참가자의 반응시간 분포에서 평균으로부터 3 표준편차를 벗어난 시행을 제거하였다. 가외치 제거 결과, 정확반응 시행의 반응시간 자료에서  `r round(100 - 100*nrow(sp2.all)/nrow(cp2.all), digits = 2)`%가 제거되었다.
+
+```{r, warning=FALSE, message=FALSE}
+
+sp2.all %>% group_by(SN, Btw, Block) %>% 
+  summarise(NumTrial = length(RT)) %>% 
+  ungroup %>% 
+  group_by(Btw, Block) %>%
+  summarise(Avg = mean(NumTrial), 
+            Med = median(NumTrial), 
+            Min = min(NumTrial), 
+            Max = max(NumTrial)) %>% 
+  ungroup %>% kable(digits=3)
+
+```
+
+<br>
+  
+  각 참가자의 집단 및 블록에 따른 평균 반응시간과 표준편차를 계산하였다. 두 집단 모두에서 블록 진행에 따라 연합 기억 검사의 반응시간이 향상되는 모습을 보였다. 아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 오차 막대는 95% 참가자 내 신뢰구간을 나타낸다.
+
+```{r, fig.width=18, fig.height=6}
+# long format
+p2.L.rt.long.all <- sp2.all %>% group_by(SN, Btw, Block) %>% 
+  summarise(RT = mean(RT)) %>% 
+  ungroup()
+p2.L.rt.long.exp <- p2.L.rt.long.all %>% filter(Btw==1)
+p2.L.rt.long.con <- p2.L.rt.long.all %>% filter(Btw==2)
+
+# wide format
+p2.L.rt.swide.all <- p2.L.rt.long.all %>% spread(key = Block, value = RT)
+p2.L.rt.swide.exp <- p2.L.rt.swide.all %>% filter(Btw==1)
+p2.L.rt.swide.con <- p2.L.rt.swide.all %>% filter(Btw==2)
+
+
+# summary
+p2.L.rt.g.all <- p2.L.rt.long.all %>% group_by(Btw, Block) %>%
+  summarise(RT.M = mean(RT), SD = sd(RT)) %>% ungroup()
+p2.L.rt.g.all$se <- Rmisc::summarySEwithin(data = p2.L.rt.long.all, measurevar = "RT", 
+                                           idvar = "SN", betweenvars = "Btw", withinvars = "Block")$se
+p2.L.rt.g.all$ci <- Rmisc::summarySEwithin(data = p2.L.rt.long.all, measurevar = "RT", 
+                                           idvar = "SN", betweenvars = "Btw", withinvars = "Block")$ci
+p2.L.rt.g.exp <- p2.L.rt.g.all %>% filter(Btw==1)
+p2.L.rt.g.con <- p2.L.rt.g.all %>% filter(Btw==2)
+p2.L.rt.g.all %>% kable(digits=3)
+
+## plot
+p2.rt.all.plot1 <- ggplot(p2.L.rt.g.all, mapping=aes(x=Block, y=RT.M, group=Btw)) + 
+  geom_ribbon(p2.L.rt.g.all, mapping=aes(x=Block, ymin=RT.M-ci, ymax=RT.M+ci, fill=Btw), alpha=0.5) + 
+  geom_line(p2.L.rt.g.all, mapping=aes(x=Block, y=RT.M, color=Btw), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = Block, ymin=RT.M-ci, ymax=RT.M+ci, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("#feb24c", "#91bfdb"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#feb24c", "#91bfdb")) +
+  coord_cartesian(ylim = c(0, 1800), clip = "on") +
+  labs(x = "Block", y = "Response Time (ms)", fill="Group") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 2 Association Memory (All Group)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position="top")
+p2.rt.exp.plot1 <- ggplot(p2.L.rt.g.exp, mapping=aes(x=Block, y=RT.M, group=1)) + 
+  geom_ribbon(aes(ymin=RT.M-ci, ymax=RT.M+ci), fill="darkblue", alpha=0.3) + geom_line(colour="darkblue", size = 1) +
+  geom_pointrange(aes(x = Block, ymin=RT.M-ci, ymax=RT.M+ci), position = position_dodge(0.65), 
+                  color = "darkblue", size = 0.8, show.legend = FALSE) +
+  geom_line(p2.L.rt.long.exp, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=Block, y=RT, group=SN, color=SN)) +
+  geom_point(p2.L.rt.long.exp, mapping = aes(x=Block, y=RT, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(0, 1800), clip = "on") +
+  labs(x = "Block", y = "Response Time (ms)") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 2 Association Memory (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+
+p2.rt.con.plot1 <- ggplot(p2.L.rt.g.con, mapping=aes(x=Block, y=RT.M, group=1)) + 
+  geom_ribbon(aes(ymin=RT.M-ci, ymax=RT.M+ci), fill="darkblue", alpha=0.3) + geom_line(colour="darkblue", size = 1) +
+  geom_pointrange(aes(x = Block, ymin=RT.M-ci, ymax=RT.M+ci), position = position_dodge(0.65), 
+                  color = "darkblue", size = 0.8, show.legend = FALSE) +
+  geom_line(p2.L.rt.long.con, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=Block, y=RT, group=SN, color=SN)) +
+  geom_point(p2.L.rt.long.con, mapping = aes(x=Block, y=RT, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(0, 1800), clip = "on") +
+  labs(x = "Block", y = "Response Time (ms)") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 2 Association Memory (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+ggpubr::ggarrange(p2.rt.all.plot1, p2.rt.exp.plot1, p2.rt.con.plot1, ncol = 3, labels=c("A) All Group","B) Experimental","C) Control"))
+```
+
+<br>
+  
+##### 혼합 요인 분산 분석 1
+  
+<br>
+  
+  집단과 블록 진행을 요인으로 한 2 X 4 혼합 요인 분산분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p2.rt.aov <- aov_ez(id = "SN", dv = "RT", data = p2.L.rt.long.all, between = "Btw", within = "Block")
+# test_levene(p2.rt.aov)
+# test_sphericity(p2.rt.aov)
+anova(p2.rt.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 블록 진행의 주효과는 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p2.rt.aov.m1 <- emmeans(p2.rt.aov, pairwise ~ Block | Btw)
+p2.rt.aov.m1$contrasts %>% kable(digits=3)
+
+```
+
+각 집단별로 블록 반복에 의한 사후분석을 수행하였다. 두 집단 모두에서 네 번째 블록은 첫 번째 블록보다 유의하게 빠른 반응시간을 보였다.
+
+<br> 
+
+  
+둘째 날 학습한 목록 2의 연합 기억 검사의 정확도와 반응시간을 집단별로 함께 나타난 그래프는 아래와 같다.
+
+``` {r , fig.width = 12, fig.height = 6}
+ggpubr::ggarrange(p2.all.plot1, p2.rt.all.plot1, ncol=2, labels = c("A) Accuracy","B) Response Time"))
+```
+
+<br><br>
+  
+### Day 1 & Day 2 연합 기억 비교
+  
+```{r, collapse=TRUE}
+p1$day <- 1; p2$day <- 2; p12 <- rbind(p1, p2)
+p12$day = factor(p12$day, levels = c(1,2), labels=c("day1", "day2"))
+p12.exp <- p12 %>% filter(Btw == 1)
+p12.con <- p12 %>% filter(Btw == 2)
+
+sp1.all$day <- 1; sp2.all$day <- 2; sp12.all <- rbind(sp1.all, sp2.all)
+sp12.all$day = factor(sp12.all$day, levels = c(1,2), labels=c("day1", "day2"))
+sp12.exp <- sp12.all %>% filter(Btw == 1)
+sp12.con <- sp12.all %>% filter(Btw == 2)
+
+```
+
+<br>
+  
+#### 정확도 (Accuracy)
+  
+<br>
+  
+  각 집단에서 첫째 날 학습한 목록 1과 둘째 날 학습한 목록 2의 연합 학습 검사 정확도를 비교하였다. 개별 참가자의 정확도 평균과 표준편차를 집단과 물체 목록에 따라 계산하여 그래프로 표시하였다. 두 집단 모두, 각 물체 목록에서 반복 학습에 따라 정확도가 향상되었으나 첫 번째, 두 번째 블록에서 둘째 날의 정확도가 첫째 날보다 우수한 패턴이 나타났다. 그러나 이러한 차이는 네 번째 블록으로 갈수록 사라졌다. 아래의 그래프에서 A는 실험 집단, B는 통제집단을 나타내며, 빨간 점과 파란 점은 평균, 오차 막대는 95% 신뢰구간을 나타낸다.
+
+```{r, fig.width= 12, fig.height=6}
+# phase 1, subject-level, long-format
+p12.L.long.all <- p12 %>% group_by(SN, Btw, day, Block) %>% 
+  summarise(Accuracy = mean(Corr)*100) %>% ungroup()
+p12.L.long.exp <- p12.L.long.all %>% filter(Btw == 1)
+p12.L.long.con <- p12.L.long.all %>% filter(Btw == 2) 
+
+# summary table
+p12.L.g.all <- p12.L.long.all %>% group_by(Btw, day, Block) %>%
+  summarise(ACC.M = mean(Accuracy), SD = sd(Accuracy)) %>% ungroup()
+p12.L.g.all$se <- Rmisc::summarySEwithin(data = p12.L.long.all, measurevar = "Accuracy", 
+                                         idvar = "SN", betweenvars ="Btw", withinvars = c("day", "Block"))$se
+p12.L.g.all$ci <- Rmisc::summarySEwithin(data = p12.L.long.all, measurevar = "Accuracy", 
+                                         idvar = "SN", betweenvars ="Btw", withinvars = c("day", "Block"))$ci
+p12.L.g.exp <- p12.L.g.all %>% filter(Btw == 1)
+p12.L.g.con <- p12.L.g.all %>% filter(Btw == 2)
+# p12.L.g.all %>% kable(digits=3)
+
+## plot
+p12.exp.plot1 <- ggplot(p12.L.g.exp, mapping=aes(x=Block, y=ACC.M, group=day)) + 
+  geom_ribbon(p12.L.g.exp, mapping=aes(x=Block, ymin=ACC.M-ci, ymax=ACC.M+ci, fill=day), alpha=0.3) + 
+  geom_line(p12.L.g.exp, mapping=aes(x=Block, y=ACC.M, color=day), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = Block, ymin=ACC.M-ci, ymax=ACC.M+ci, color=day), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("darkred", "darkblue"), labels = c("List 1", "List 2")) +
+  scale_color_manual(values = c("darkred", "darkblue")) +
+  coord_cartesian(ylim = c(0, 105), clip = "on") +
+  labs(x = "Block", y = "Accuracy (%)", fill="Object List") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 & 2 Association Memory (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position="top")
+
+p12.con.plot1 <- ggplot(p12.L.g.con, mapping=aes(x=Block, y=ACC.M, group=day)) + 
+  geom_ribbon(p12.L.g.con, mapping=aes(x=Block, ymin=ACC.M-ci, ymax=ACC.M+ci, fill=day), alpha=0.3) + 
+  geom_line(p12.L.g.con, mapping=aes(x=Block, y=ACC.M, color=day), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = Block, ymin=ACC.M-ci, ymax=ACC.M+ci, color=day), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("darkred", "darkblue"), labels = c("List 1", "List 2")) +
+  scale_color_manual(values = c("darkred", "darkblue")) +
+  coord_cartesian(ylim = c(0, 105), clip = "on") +
+  labs(x = "Block", y = "Accuracy (%)", fill="Object List") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 & 2 Association Memory (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position="top")
+ggpubr::ggarrange(p12.exp.plot1, p12.con.plot1, ncol=2, labels = c("A) Experimental","B) Control"))
+```
+
+<br>
+  
+##### 혼합 요인 분산 분석 1
+  
+<br>
+  
+집단과 목록, 블록을 요인으로 한 2 X 2 X 4 혼합 요인 분산 분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+# all group
+p12.acc.all.aov <- aov_ez(id = "SN", dv = "Accuracy", data = p12.L.long.all, between = "Btw", within = c("day" , "Block"))
+# test_levene(p12.acc.all.aov)
+# test_sphericity(p12.acc.all.aov)
+anova(p12.acc.all.aov, es = "pes") %>% kable(digits=3)
+
+```
+
+분석 결과, 물체 목록의 주효과, 블록의 주효과, 물체 목록과 블록의 상호작용이 유의하였다.
+
+
+```{r, warning=FALSE, message=FALSE}
+## all group
+p12.acc.all.m1 <- emmeans(p12.acc.all.aov, pairwise ~ Block | day, type = "response")
+p12.acc.all.m1$contrasts %>% kable(digits=3)
+
+p12.acc.all.m2 <- emmeans(p12.acc.all.aov, pairwise ~ day | Block, type = "response")
+p12.acc.all.m2$contrasts %>% kable(digits=3)
+```
+
+목록에서의 블록 차이를 사후 분석한 결과, 두 물체 목록 모두에서 네 번째 블록은 첫 번째 블록보다 유의하게 높은 정확도를 보였다, 목록 1&2, p < .001. 블록에서 물체 목록 간 차이를 사후 분석한 결과, 블록 1과 2에서 목록 2의 정확도가 목록 1보다 유의하게 높았다. 그러나 이러한 차이는 블록 3과 4에서 나타나지 않았다.
+
+<br>
+
+##### 혼합 요인 분산 분석 2
+   
+<br>
+  
+마지막 블록에서 집단과 목록을 요인으로 한 2 X 2 혼합 요인 분산 분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p12.L.long.all.b4 <- p12.L.long.all %>% filter(Block=="b4")
+
+# all group
+p12.acc.all.b4.aov <- aov_ez(id = "SN", dv = "Accuracy", data = p12.L.long.all.b4, between = "Btw", within = c("day"))
+# test_levene(p12.acc.all.aov)
+# test_sphericity(p12.acc.all.aov)
+anova(p12.acc.all.b4.aov , es = "pes") %>% kable(digits=3)
+
+```
+
+분석 결과, 물체 목록의 주효과가 유의하였다.
+
+
+```{r, warning=FALSE, message=FALSE}
+## all group
+p12.acc.all.b4.m1 <- emmeans(p12.acc.all.b4.aov , pairwise ~ day | Btw, type = "response")
+p12.acc.all.b4.m1$contrasts %>% kable(digits=3)
+
+p12.acc.all.b4.m2 <- emmeans(p12.acc.all.b4.aov, pairwise ~ Btw | day, type = "response")
+p12.acc.all.b4.m2$contrasts %>% kable(digits=3)
+```
+
+집단에서 목록에 따른 정확도를 사후 분석한 결과, 통제 집단에서 목록 2는 목록 1보다 유의하게 높은 정확도를 보였다. 실험 집단에서의 차이는 유의하지 않았다. 추가로, 목록에서 집단에 따른 차이를 분석한 결과, 목록 1에서 실험 집단은 통제 집단보다 유의하게 높은 정확도를 보였다.
+
+
+<br>
+  
+#### 반응시간 (Response Time)
+  
+<br>
+  
+  두 집단에서 목록, 블록에 따른 연합 학습 검사 반응시간을 비교하였다. 반응시간 자료는 각 물체 목록 별로 전처리된 자료를 사용하였다. 개별 참가자의 반응시간 평균과 표준편차를 집단과 물체 목록에 따라 계산하여 그래프로 표시하였다. 두 집단 모두, 각 물체 목록에서 블록 반복에 따라 반응시간이 빨라졌다. 아래의 그래프에서 A는 실험 집단, B는 통제집단을 나타내며, 빨간 점과 파란 점은 평균, 오차 막대는 95% 신뢰구간을 나타낸다.
+
+```{r, fig.width= 12, fig.height=6}
+# long format
+p12.L.rt.long.all <- sp12.all %>% group_by(SN, Btw, day, Block) %>% 
+  summarise(RT = mean(RT)) %>% 
+  ungroup()
+p12.L.rt.long.exp <- p12.L.rt.long.all %>% filter(Btw==1)
+p12.L.rt.long.con <- p12.L.rt.long.all %>% filter(Btw==2)
+
+# summary
+p12.L.rt.g.all <- p12.L.rt.long.all %>% group_by(Btw, day, Block) %>%
+  summarise(RT.M = mean(RT), SD = sd(RT)) %>% ungroup()
+p12.L.rt.g.all$se <- Rmisc::summarySEwithin(data = p12.L.rt.long.all, measurevar = "RT", 
+                                            idvar = "SN", betweenvars = "Btw", withinvars = c("day", "Block"))$se
+p12.L.rt.g.all$ci <- Rmisc::summarySEwithin(data = p12.L.rt.long.all, measurevar = "RT", 
+                                            idvar = "SN", betweenvars = "Btw", withinvars = c("day", "Block"))$ci
+p12.L.rt.g.exp <- p12.L.rt.g.all %>% filter(Btw==1)
+p12.L.rt.g.con <- p12.L.rt.g.all %>% filter(Btw==2)
+# p12.L.rt.g.all %>% kable(digits=3)
+
+## plot 
+p12.rt.exp.plot1 <- ggplot(p12.L.rt.g.exp, mapping=aes(x=Block, y=RT.M, group=day)) + 
+  geom_ribbon(p12.L.rt.g.exp, mapping=aes(x=Block, ymin=RT.M-ci, ymax=RT.M+ci, fill=day), alpha=0.3) + 
+  geom_line(p12.L.rt.g.exp, mapping=aes(x=Block, y=RT.M, color=day), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = Block, ymin=RT.M-ci, ymax=RT.M+ci, color=day), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("darkred", "darkblue"), labels = c("List 1", "List 2")) +
+  scale_color_manual(values = c("darkred", "darkblue")) +
+  coord_cartesian(ylim = c(0, 1800), clip = "on") +
+  labs(x = "Block", y = "Response Time (ms)", fill="Object List") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 & 2 Association Memory (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position="top")
+p12.rt.con.plot1 <- ggplot(p12.L.rt.g.con, mapping=aes(x=Block, y=RT.M, group=day)) + 
+  geom_ribbon(p12.L.rt.g.con, mapping=aes(x=Block, ymin=RT.M-ci, ymax=RT.M+ci, fill=day), alpha=0.3) + 
+  geom_line(p12.L.rt.g.con, mapping=aes(x=Block, y=RT.M, color=day), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = Block, ymin=RT.M-ci, ymax=RT.M+ci, color=day), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("darkred", "darkblue"), labels = c("List 1", "List 2")) +
+  scale_color_manual(values = c("darkred", "darkblue")) +
+  coord_cartesian(ylim = c(0, 1800), clip = "on") +
+  labs(x = "Block", y = "Response Time (ms)", fill="Object List") +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  # ggtitle("Day 1 & 2 Association Memory (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position="top")
+ggpubr::ggarrange(p12.rt.exp.plot1, p12.rt.con.plot1, ncol=2, labels=c("A) Experimental","B) Control"))
+```
+<br>
+  
+##### 혼합 요인 분산 분석 1
+  
+<br>
+  
+  반응시간에 대하여, 집단, 목록, 블록의 요인으로 2 X 2 X 4 혼합 요인 분산 분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+# all group
+p12.rt.all.aov <- aov_ez(id = "SN", dv = "RT", data = p12.L.rt.long.all, between = "Btw", within = c("day" , "Block"))
+anova(p12.rt.all.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 목록과 블록의 주효과, 목록과 블록 간의 상호작용, 집단과 블록의 상호작용이 유의하였다. 
+
+```{r, warning=FALSE, message=FALSE}
+## all group
+p12.rt.all.m1 <- emmeans(p12.rt.all.aov, pairwise ~ Block | day)
+p12.rt.all.m1$contrasts %>% kable(digits=3)
+
+p12.rt.all.m2 <- emmeans(p12.rt.all.aov, pairwise ~ day | Block)
+p12.rt.all.m2$contrasts %>% kable(digits=3)
+
+p12.rt.all.m3 <- emmeans(p12.rt.all.aov, pairwise ~ Block | Btw)
+p12.rt.all.m3$contrasts %>% kable(digits=3)
+```
+
+목록에서의 블록 차이 분석 결과, 두 목록 모두 네 번째 블록은 첫 번째 블록보다 유의하게 빠른 반응시간을 보였다. 블록에서 물체 목록 간 차이를 분석한 결과, 블록 1과 2에서 목록 2의 반응시간이 더 빠르게 나타났다. 그러나 블록 3과 4에서는 이러한 차이가 나타나지 않았다. 각 집단에서 블록에 의한 차이를 분석한 결과, 두 집단 모두 네 번째 블록은 첫 번째 블록보다 유의하게 빠른 반응시간을 보였다.
+
+<br>
+
+##### 혼합 요인 분산 분석 2
+  
+<br>
+  
+  반응시간에 대하여, 네 번째 블록의 집단, 목록을 요인으로 2 X 2 혼합 요인 분산 분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+# all group
+p12.L.rt.long.b4.all <- p12.L.rt.long.all %>% filter(Block=="b4")
+p12.rt.all.b4.aov <- aov_ez(id = "SN", dv = "RT", data = p12.L.rt.long.b4.all, between = "Btw", within = c("day"))
+anova(p12.rt.all.b4.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 모든 효과가 유의하지 않았다.
+
+```{r, warning=FALSE, message=FALSE}
+## all group
+p12.rt.all.b4.m1 <- emmeans(p12.rt.all.b4.aov, pairwise ~ day | Btw)
+p12.rt.all.b4.m1$contrasts %>% kable(digits=3)
+
+p12.rt.all.b4.m2 <- emmeans(p12.rt.all.b4.aov, pairwise ~ Btw | day)
+p12.rt.all.b4.m2$contrasts %>% kable(digits=3)
+
+```
+
+<br>
+
+정확도와 반응시간을 함께 나타낸 그래프는 아래와 같다.
+
+``` {r, fig.width= 12, fig.height=8}
+ggpubr::ggarrange(p12.exp.plot1, p12.con.plot1, p12.rt.exp.plot1, p12.rt.con.plot1, nrow = 2, ncol=2, 
+          labels=c("A) Experimental - Acc","B) Control - Acc","C) Experimental - RT","D) Control - RT"))
+```
+  
+  
+### 색 단서에 의한 학습 차이
+  
+<br>
+
+  본 실험에서는 참가자 내에서 예측 오류의 정도를 조작하기 위하여 물체-색 연합 기억을 사용하였다. 네 가지 색은 주황색[c1; 237, 125, 39], 노란색[c2; 255, 192, 0], 파란색[c3; 90, 155, 213], 초록색[c4; 112, 173, 70]으로 설정되었다. 색에 따라 기억 수행 정도에서 큰 차이가 난다면, 이 차이가 마지막 날 출처 기억 및 연합 기억 검사에 혼입될 가능성이 있다. 따라서 색에 따라 연합 기억 수행이 차이가 있는지 살펴보았다 .
+
+<br>
+
+```{r, warning=FALSE, message=FALSE}
+p12.acc.cue.all <- p12  %>% group_by(SN, cCue) %>% 
+  summarise(Accuracy = mean(Corr)*100, SD = sd(Corr)*100) %>% 
+  ungroup()
+# p12.acc.cue.all %>% kable()
+
+p12.acc.cue.all.wide <- p12.acc.cue.all %>% 
+  select(SN, cCue, Accuracy) %>% 
+  spread(cCue, Accuracy)
+# p12.acc.cue.all.wide %>% kable(digits=0)
+
+p12.acc.cue.all.g <- p12.acc.cue.all %>% group_by(cCue) %>% 
+  summarise(Acc.m = mean(Accuracy), Acc.sd = sd(Accuracy)) %>% 
+  ungroup()
+p12.acc.cue.all.g$Acc.ci <- Rmisc::summarySEwithin(data = p12.acc.cue.all, measurevar = "Accuracy", idvar = "SN", withinvars = "cCue")$ci
+p12.acc.cue.all.g$Acc.se <- Rmisc::summarySEwithin(data = p12.acc.cue.all, measurevar = "Accuracy", idvar = "SN", withinvars = "cCue")$se
+p12.acc.cue.all.g %>% kable(digits=3)
+
+p12.acc.cue.plot1 <- ggplot(data=p12.acc.cue.all, aes(x=cCue, y=Accuracy)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .7, 
+               width = .65, colour="black", fill=c("#ed7d31", "#ffc000", "#5b9ad5", "#70ad47"), size = 1.02) +
+  geom_pointrange(data=p12.acc.cue.all.g, aes(x = cCue, y = Acc.m, ymin = Acc.m-Acc.ci, ymax = Acc.m+Acc.ci),
+                  position = position_dodge(0.65), color = "darkred", size = 1, show.legend = FALSE) +
+  scale_x_discrete(labels = c("C1", "C2", "C3", "C4")) +
+  coord_cartesian(ylim = c(0, 105), clip = "on") +
+  labs(x = "Color Condition", y = "Accuracy (%)") +
+  # ggtitle("Association Memory Performance") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"), 
+        legend.position="top")
+ggpubr::ggarrange(p12.acc.cue.plot1, labels = c("Association Memory Performance by Color"))
+```
+
+색 조건을 요인으로 하는 분산분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p12.acc.cue.m1 <- aov_ez(id = "SN", dv = "Accuracy", data=p12.acc.cue.all, within = c("cCue"))
+anova(p12.acc.cue.m1, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 색의 주효과가 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p12.acc.cue.m1.ph <- emmeans(p12.acc.cue.m1, pairwise ~ cCue, type = "response")
+p12.acc.cue.m1.ph$contrasts %>% kable(digits=3)
+```
+
+사후 분석 결과, 주황색(c1)의 정확도는 파란색(c3)보다 유의하게 낮았다. 또한 주황색(c1)은 초록색(c4)보다 낮은 정확도를 보이는 경향이 나타났다.
+다른 색 간의 차이는 유의하지 않았다. 
+
+<br>
+
+****
+  
+<br>
+  
+## Day 3 출처 기억 및 연합 기억 검사
+ 
+<br>
+  
+```{r, collapse=TRUE}
+## load data
+p3 <- read.csv("MemUdt_PE_d3t6_p.csv", header = T) 
+p3$SN = factor(p3$SN); p3$Btw = factor(p3$Btw)
+p3$cSrc = factor(p3$cSrc, levels=c(1,2,3),  labels=c("List_1","List_2","List_3"))
+p3$cCue = factor(p3$cCue, levels=c(1,2,3,4,0), labels=c("cc1","cc2","cc3","cc4","cc0"))
+p3$cPE = factor(p3$cPE, levels=c(1,2,3,4,0), labels=c("pe1","pe2","pe3","pe4","pe0"))
+p3$CueName = factor(p3$CueName, labels=c("c0","c1","c2","c3","c4"))
+p3$Resp <- factor(p3$Resp, levels=c(1,2,3), labels=c("Day_1", "Day_2", "New"))
+p3$RT <- p3$RT*1000; p3$Correct <- as.numeric(p3$Corr==1)
+p3$Int <- as.numeric(p3$Corr==3); p3$Err <- as.numeric(p3$Corr==2)
+p3$Incorr <- as.numeric(p3$Corr==0); p3$aCorr <- as.numeric(p3$aCorr==1); 
+p3 <- p3 %>% select(SN, Btw, Trial, cSrc, cCue, cPE, IMname, Resp, Corr, Conf, 
+                    aResp, aRT, aCorr, aConf, Correct, Int, Err, Incorr)
+
+glimpse(p3, width = 60)
+
+# 1. SN: participant ID
+# 2. Btw: between-participants factor. 1-experimental group, 2-control group
+# 3. Trial: 1 ~ 360
+# 4. cSrc: learning source of stimuli. List_1 - day1, List_2 - day2, New - lure
+# 5. cCue: association color cue condition. cc1 - color 1, cc2 - color 2, cc3 - color 3, cc4 = color 4, cc0 - lure
+# 6. cPE: prediction error condition. pe1 - 0%, pe2 - 30%, pe3 - 70%, pe4 - 100%, pe0 - no pe/lure
+# 7. IMname: name of stimuli
+# 8. Resp: source response (learning day/list)
+# 9. Corr: source response type. 1-correct, 2-source confusion, 3-intrusion, 0-incorrect
+# 10. Conf: source response confidence. 1-4
+# 11. aResp: association response
+# 12. aConf: association response confidence. 1-4
+# 13. Correct: correct response of source memory (List1>D1, List2>D2, List3>new)
+# 14. Int: intrusion response of source memory (List2>1)
+# 15. err: source confusion response of source memory (List1>2)
+# 16. Incorrr: incorrect response of source memory (List1&2>new, List3>day1&2)
+
+table(p3$SN)
+length(unique(p3$SN[p3$Btw==1]))
+length(unique(p3$SN[p3$Btw==2]))
+```
+
+<br><br>
+  
+### Day 3 출처 기억 반응 분석
+  
+<br>
+
+출처 반응의 종속 변인은 주요 종속 변인인 **목록 1 정확반응 (List 1 Correct, L1→D1)**, **목록 2 정확반응 (List 2 Correct, L2→D2)**, **출처 혼동 (Source Confusion, L1→D2)**, **침범 (Intrusion, L2→D1)** 과 부가적인 변인인 **목록 3 정확반응 (List 3 Correct, L3→New)**, **목록 3 오경보 1과 2 (List 3 False Alarm - Day 1&2, L3→D1&2)**, **목록 1 & 2 누락 (Miss, L1&2→New)**으로 구분되어 분석되었다.
+
+<br>
+
+#### 출처 반응의 기술통계
+
+<br>
+
+두 집단의 물체 목록에 따른 출처 반응 패턴을 표로 나타내었다. **List 3 Correct**, **List 3 False Alarm**, **List 1&2 Miss**는 두 집단 모두에서 천장 효과와 바닥 효과를 보였다. 따라서 이 반응들은 분석에 포함하지 않았다.
+
+```{r, warning= FALSE, message=FALSE}
+# phase 1, subject-level, long-format
+p3.AsyPtt.long.all <- p3 %>%  group_by(SN, Btw, cSrc, Resp) %>%
+  summarise(Rsp = length(Resp)/80*100) %>% ungroup()
+p3.AsyPtt.wide.all <- p3.AsyPtt.long.all %>% spread(key = Resp, value = Rsp)
+p3.AsyPtt.long.all <- gather(p3.AsyPtt.wide.all, Resp, Rsp, Day_1:New, factor_key=TRUE)
+p3.AsyPtt.long.all[is.na(p3.AsyPtt.long.all)] <- 0 
+p3.AsyPtt.long.all <- arrange(p3.AsyPtt.long.all, SN, cSrc, Resp, Rsp)
+p3.AsyPtt.long.exp <- p3.AsyPtt.long.all %>% filter(Btw==1)
+p3.AsyPtt.long.con <- p3.AsyPtt.long.all %>% filter(Btw==2)
+
+# wide format
+p3.AsyPtt.swide.all <- p3.AsyPtt.long.all %>% spread(key = Resp, value = Rsp)
+p3.AsyPtt.swide.exp <- p3.AsyPtt.swide.all %>% filter(Btw==1)
+p3.AsyPtt.swide.con <- p3.AsyPtt.swide.all %>% filter(Btw==2)
+
+# summary table
+p3.AsyPtt.g.all <- p3.AsyPtt.long.all %>% group_by(Btw, cSrc, Resp) %>%
+  summarise(Rsp.M = mean(Rsp), Rsp.SD = sd(Rsp)) %>% ungroup()
+p3.AsyPtt.g.all$Rsp.se <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all, measurevar = "Rsp", idvar = "SN", 
+                                                 betweenvars = "Btw", withinvars = c("cSrc","Resp"))$se
+p3.AsyPtt.g.all$Rsp.ci <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all, measurevar = "Rsp", idvar = "SN", 
+                                                 betweenvars = "Btw", withinvars = c("cSrc","Resp"))$ci
+p3.AsyPtt.g.exp <- p3.AsyPtt.g.all %>% filter(Btw==1)
+p3.AsyPtt.g.con <- p3.AsyPtt.g.all %>% filter(Btw==2)
+
+p3.AsyPtt.g.table <- p3.AsyPtt.g.all %>% unite(cSrc_Resp, cSrc:Resp, remove=TRUE) %>% rename(Src_Resp = "cSrc_Resp")
+p3.AsyPtt.g.table$Src_Resp[p3.AsyPtt.g.table$Src_Resp=='List_1_Day_1'] <- 'List 1 Correct'
+p3.AsyPtt.g.table$Src_Resp[p3.AsyPtt.g.table$Src_Resp=='List_2_Day_2'] <- 'List 2 Correct'
+p3.AsyPtt.g.table$Src_Resp[p3.AsyPtt.g.table$Src_Resp=='List_1_Day_2'] <- 'Source Confusion'
+p3.AsyPtt.g.table$Src_Resp[p3.AsyPtt.g.table$Src_Resp=='List_2_Day_1'] <- 'Intrusion'
+p3.AsyPtt.g.table$Src_Resp[p3.AsyPtt.g.table$Src_Resp=='List_1_Day_3'] <- 'List 1 Miss'
+p3.AsyPtt.g.table$Src_Resp[p3.AsyPtt.g.table$Src_Resp=='List_2_Day_3'] <- 'List 2 Miss'
+p3.AsyPtt.g.table$Src_Resp[p3.AsyPtt.g.table$Src_Resp=='List_3_New'] <- 'List 3 Correct'
+p3.AsyPtt.g.table$Src_Resp[p3.AsyPtt.g.table$Src_Resp=='List_3_Day_1'] <- 'List 3 FA - Day 1'
+p3.AsyPtt.g.table$Src_Resp[p3.AsyPtt.g.table$Src_Resp=='List_3_Day_2'] <- 'List 3 FA - Day 2'
+srt <- c(1, 3, 5, 4, 2, 6, 8, 9, 7)
+p3.AsyPtt.g.table.1 <- p3.AsyPtt.g.table %>% filter(Btw == 1) %>% arrange(srt)
+p3.AsyPtt.g.table.2 <- p3.AsyPtt.g.table %>% filter(Btw == 2) %>% arrange(srt)
+p3.AsyPtt.g.table.all <- rbind(p3.AsyPtt.g.table.1, p3.AsyPtt.g.table.2)
+p3.AsyPtt.g.table.all %>% kable(digits=2)
+```
+
+<br>
+  
+#### 출처 반응의 비대칭적 패턴
+  
+<br>
+  
+  두 집단의 물체 목록에 따른 출처 반응 패턴을 그래프로 나타내었다. 그래프에서 A는 전체 집단의 물체 목록에 따른 출처 반응, B는 실험 집단, C는 통제집단을 나타낸다. A 그래프에서 x축은 물체 목록에 따른 출처 반응, y축은 반응 비율을 나타내며, 색은 각 집단을 나타낸다. B,C 그래프의 x축은 각 학습일에 학습한 물체 목록(첫째 날 학습 `목록 1`, 둘째 날 학습 `목록 2`, 새로운 물체 `목록 3`)을 나타내며, y축은 반응의 비율을 나타낸다. 각 집단에서 해당 물체 목록에 대한 출처 귀인 반응을 첫째 날 학습 `Day 1`, 둘째 날 학습 `Day 2`, 학습하지 않음 `New`로 구분하였다. 모든 그래프에서 빨간 점은 평균을 나타내며, 오차 막대는 95% 신뢰구간으로 표시하였다.
+
+```{r, fig.width= 10, fig.height=12}
+## plot
+p3.all.plot1 <- ggplot(data=p3.AsyPtt.long.all, aes(x=Resp, y=Rsp, fill=Btw)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .9, width = 0.8, colour="black", size = 1.02) +
+  geom_pointrange(data=p3.AsyPtt.g.all, aes(x = Resp, y=Rsp.M, ymin = Rsp.M-Rsp.ci, ymax = Rsp.M+Rsp.ci),
+                  position = position_dodge(0.80), color = "darkred", size = 1, show.legend = FALSE) +
+  facet_grid(.~cSrc, scales="free_x", space = "free",
+             labeller = labeller(cSrc = c("List_1" = "List 1 (Day 1)","List_2" = "List 2 (Day 2)","List_3" = "List 3 (New)"))) +
+  scale_x_discrete(labels=c("Day 1","Day 2","New")) +
+  scale_fill_manual(values = c("#feb24c", "#91bfdb"),
+                    labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(0, 105), clip = "on") +
+  labs(x = "Source Response by Object List", y = "Proportion of Response (%)", fill ="Group") +
+  # ggtitle("Source Memory Response") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        strip.text.x = element_text(face = "plain", size = 15, color = "black"),
+        strip.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.spacing=unit(1, "lines"),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"), 
+        # plot.title = element_text(hjust = 0.5),
+        legend.position="top")
+p3.exp.plot1 <- ggplot(data=p3.AsyPtt.long.exp, aes(x=cSrc, y=Rsp, fill=Resp)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .7, width = .65, colour="black", size = 1.02) +
+  geom_point(position=position_dodge(0.65), aes(x=cSrc, y=Rsp, group=Resp, color = SN), size = 3, alpha = .4, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.exp,cSrc=="List_1"), inherit.aes = FALSE,
+               aes(x=1-.22, y=filter(p3.AsyPtt.swide.exp,cSrc=="List_1")$"Day_1",
+                   xend=1, yend=filter(p3.AsyPtt.swide.exp,cSrc=="List_1")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.exp,cSrc=="List_1"), inherit.aes = FALSE,
+               aes(x=1, y=filter(p3.AsyPtt.swide.exp,cSrc=="List_1")$"Day_2",
+                   xend=1+.22, yend=filter(p3.AsyPtt.swide.exp,cSrc=="List_1")$"New", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.exp,cSrc=="List_2"), inherit.aes = FALSE,
+               aes(x=2-.22, y=filter(p3.AsyPtt.swide.exp,cSrc=="List_2")$"Day_1",
+                   xend=2, yend=filter(p3.AsyPtt.swide.exp,cSrc=="List_2")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.exp,cSrc=="List_2"), inherit.aes = FALSE,
+               aes(x=2, y=filter(p3.AsyPtt.swide.exp,cSrc=="List_2")$"Day_2",
+                   xend=2+.22, yend=filter(p3.AsyPtt.swide.exp,cSrc=="List_2")$"New", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.exp,cSrc=="List_3"), inherit.aes = FALSE,
+               aes(x=3-.22, y=filter(p3.AsyPtt.swide.exp,cSrc=="List_3")$"Day_1",
+                   xend=3, yend=filter(p3.AsyPtt.swide.exp,cSrc=="List_3")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.exp,cSrc=="List_3"), inherit.aes = FALSE,
+               aes(x=3, y=filter(p3.AsyPtt.swide.exp,cSrc=="List_3")$"Day_2",
+                   xend=3+.22, yend=filter(p3.AsyPtt.swide.exp,cSrc=="List_3")$"New", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_pointrange(data=p3.AsyPtt.g.exp, aes(x = cSrc, y = Rsp.M, ymin = Rsp.M-Rsp.ci, ymax = Rsp.M+Rsp.ci),
+                  position = position_dodge(0.65), color = "darkred", size = 1, show.legend = FALSE) +
+  scale_fill_manual(values = c("#56b4e9", "#e69f00", "#ff6164"),
+                    labels = c("Day 1", "Day 2", "New")) +
+  scale_x_discrete(labels = c("List 1", "List 2", "List 3")) +
+  coord_cartesian(ylim = c(0, 105), clip = "on") +
+  labs(x = "Object List", y = "Proportion of Response (%)", fill ="Attribution") +
+  # ggtitle("Source Memory Response (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"), 
+        legend.position="top")
+p3.con.plot1 <- ggplot(data=p3.AsyPtt.long.con, aes(x=cSrc, y=Rsp, fill=Resp)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .7, width = .65, colour="black", size = 1.02) +
+  geom_point(position=position_dodge(0.65), aes(x=cSrc, y=Rsp, group=Resp, color = SN), size = 3, alpha = .4, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.con,cSrc=="List_1"), inherit.aes = FALSE,
+               aes(x=1-.22, y=filter(p3.AsyPtt.swide.con,cSrc=="List_1")$"Day_1",
+                   xend=1, yend=filter(p3.AsyPtt.swide.con,cSrc=="List_1")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.con,cSrc=="List_1"), inherit.aes = FALSE,
+               aes(x=1, y=filter(p3.AsyPtt.swide.con,cSrc=="List_1")$"Day_2",
+                   xend=1+.22, yend=filter(p3.AsyPtt.swide.con,cSrc=="List_1")$"New", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.con,cSrc=="List_2"), inherit.aes = FALSE,
+               aes(x=2-.22, y=filter(p3.AsyPtt.swide.con,cSrc=="List_2")$"Day_1",
+                   xend=2, yend=filter(p3.AsyPtt.swide.con,cSrc=="List_2")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.con,cSrc=="List_2"), inherit.aes = FALSE,
+               aes(x=2, y=filter(p3.AsyPtt.swide.con,cSrc=="List_2")$"Day_2",
+                   xend=2+.22, yend=filter(p3.AsyPtt.swide.con,cSrc=="List_2")$"New", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.con,cSrc=="List_3"), inherit.aes = FALSE,
+               aes(x=3-.22, y=filter(p3.AsyPtt.swide.con,cSrc=="List_3")$"Day_1",
+                   xend=3, yend=filter(p3.AsyPtt.swide.con,cSrc=="List_3")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.swide.con,cSrc=="List_3"), inherit.aes = FALSE,
+               aes(x=3, y=filter(p3.AsyPtt.swide.con,cSrc=="List_3")$"Day_2",
+                   xend=3+.22, yend=filter(p3.AsyPtt.swide.con,cSrc=="List_3")$"New", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_pointrange(data=p3.AsyPtt.g.con, aes(x = cSrc, y=Rsp.M, ymin = Rsp.M-Rsp.ci, ymax = Rsp.M+Rsp.ci),
+                  position = position_dodge(0.65), color = "darkred", size = 1, show.legend = FALSE) +
+  scale_fill_manual(values = c("#56b4e9", "#e69f00", "#ff6164"),
+                    labels = c("Day 1", "Day 2", "New")) +
+  scale_x_discrete(labels = c("List 1", "List 2", "List 3")) +
+  coord_cartesian(ylim = c(0, 105), clip = "on") +
+  labs(x = "Object List", y = "Proportion of Response (%)", fill ="Attribution") +
+  # ggtitle("Source Memory Response (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"), 
+        legend.position="top")
+
+ggpubr::ggarrange(p3.all.plot1, labels = "A) All Group",
+          ggpubr::ggarrange(p3.exp.plot1, p3.con.plot1, ncol = 2, labels = c("B) Experimental", "C) Control")), 
+          nrow = 2) 
+```
+
+<br>
+  
+##### 목록 1, 목록 2의 출처 반응 오류 분석
+  
+<br>
+  
+###### 혼합 요인 분산 분석
+  
+<br>
+  
+  기억 갱신을 나타내는 비대칭적 출처 반응 패턴을 살펴보기 위해, 목록 1과 목록 2에서 학습 출처를 잘못 반응한 경우를 살펴보았다. **Source Confusion (L1>D2)** 과 **Intrusion (L2>D1)**에서 집단 간, 집단 내의 차이를 분석하기 위해 집단과 물체 목록에서의 출처 오류를 요인으로 한 2 X 2 혼합 요인 분산분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+# List 1 & 2 Incorrect Source Response
+p3.AsyPtt.long.all.2 <- p3.AsyPtt.long.all %>% unite(cSrc_Resp, cSrc:Resp, remove=FALSE) %>% 
+  rename(sResp = "cSrc_Resp")
+p3.AsyPtt.long.all.2$sResp <- factor(p3.AsyPtt.long.all.2$sResp)
+p3.AsyPtt.long.all.2 <- p3.AsyPtt.long.all.2 %>% filter(sResp %in% c("List_1_Day_2", "List_2_Day_1"))
+# p3.AsyPtt.long.all.2 %>% kable(digits=3)
+
+p3.AsyPtt.g.all.2 <- p3.AsyPtt.long.all.2 %>% group_by(Btw, sResp) %>%
+  summarise(Rsp.M = mean(Rsp), Rsp.SD = sd(Rsp)) %>% ungroup()
+p3.AsyPtt.g.all.2$Rsp.se <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all.2, idvar = "SN",
+                                                   measurevar = "Rsp", betweenvars = "Btw", withinvars = "sResp")$se
+p3.AsyPtt.g.all.2$Rsp.ci <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all.2, idvar = "SN",
+                                                   measurevar = "Rsp", betweenvars = "Btw", withinvars = "sResp")$ci
+p3.AsyPtt.g.all.2 %>% kable(digit=2)
+
+p3.AsyPtt.all.2.aov <- aov_ez(id = "SN", dv = "Rsp", data = p3.AsyPtt.long.all.2, between = "Btw", within = "sResp")
+anova(p3.AsyPtt.all.2.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 출처 반응의 주효과가 유의하였다. 집단의 주효과와 집단과 출처 반응의 상호작용은 유의하지 않았다.
+잠정적인 패턴을 살펴보기 위해, 각 집단 내의 출처 오류와 집단 간의 출처 오류 차이를 살펴보았다. 
+
+```{r, warning=FALSE, message=FALSE} 
+# source response contrast
+p3.AsyPtt.m2.1.all <- emmeans(p3.AsyPtt.all.2.aov, pairwise ~ sResp | Btw, type = "response")
+p3.AsyPtt.m2.1.all$contrasts %>% kable(digits=3)
+
+# group contrast
+p3.AsyPtt.m2.2.all <- emmeans(p3.AsyPtt.all.2.aov, pairwise ~ Btw | sResp, type = "response")
+p3.AsyPtt.m2.2.all$contrasts %>% kable(digits=3)
+```
+
+출처 반응에 따른 사후 분석을 수행한 결과, 실험 집단에서 **Source Confusion (L1>D2)**이 **Intrusion (L2>D1)**보다 유의하게 낮은 비대칭적 출처 오귀인 패턴을 보였다. 통제 집단에서는 **Source Confusion (L1>D2)**과 **Intrusion (L2>D1)`의 차이가 유의하지 않았다.
+각 출처 반응에서 집단 간의 차이에 대한 사후 분석 결과, 실험 집단이 통제 집단 간의 **Intrusion (L2>D1)** 차이는 유의하였다. 그러나 분산 분석에서 집단과 출처 반응 간의 상호작용이 유의하지 않았었다는 점을 고려할 필요가 있다.
+
+<br>
+
+##### 목록 1, 목록 2 출처 반응 정확도
+  
+<br>
+  
+###### 혼합 요인 분산 분석
+  
+<br>
+  
+ 목록 1, 목록 2의 출처 반응 정확도에서 집단과 출처 반응에 따른 차이를 분석하였다. 
+참가자 간 변인인 집단과 참가자 내 변인인 출처 반응을 요인으로 한 2 X 2 혼합 요인 분산분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+# List 1 & 2 & 3 Correct Source Response
+p3.AsyPtt.long.all.1 <- p3.AsyPtt.long.all %>% unite(cSrc_Resp, cSrc:Resp, remove=FALSE) %>% 
+  rename(sResp = "cSrc_Resp") 
+p3.AsyPtt.long.all.1$sResp <- factor(p3.AsyPtt.long.all.1$sResp)
+p3.AsyPtt.long.all.1 <- p3.AsyPtt.long.all.1 %>% filter(sResp %in% c("List_1_Day_1", "List_2_Day_2"))
+# p3.AsyPtt.long.all.1 %>% kable(digits=3)
+
+p3.AsyPtt.g.all.1 <- p3.AsyPtt.long.all.1 %>% group_by(Btw, sResp) %>%
+  summarise(Rsp.M = mean(Rsp), Rsp.SD = sd(Rsp)) %>% ungroup()
+p3.AsyPtt.g.all.1$Rsp <- p3.AsyPtt.g.all.1$Rsp.M
+p3.AsyPtt.g.all.1$Rsp.se <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all.1, idvar = "SN",
+                                                   measurevar = "Rsp", betweenvars = "Btw", withinvars = "sResp")$se
+p3.AsyPtt.g.all.1$Rsp.ci <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all.1, idvar = "SN",
+                                                   measurevar = "Rsp", betweenvars = "Btw", withinvars = "sResp")$ci
+
+p3.AsyPtt.g.all.1 %>% kable(digit=2)
+
+p3.AsyPtt.all.1.aov <- aov_ez(id = "SN", dv = "Rsp", data = p3.AsyPtt.long.all.1, between = "Btw", within = "sResp")
+anova(p3.AsyPtt.all.1.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 출처 반응의 주효과가 유의하였다. 집단의 주효과와 집단과 출처 반응의 상호작용은 유의하지 않았다.
+
+```{r, warning=FALSE, message=FALSE}
+p3.AsyPtt.m1.1.all <- emmeans(p3.AsyPtt.all.1.aov, pairwise ~ sResp | Btw, type = "response")
+p3.AsyPtt.m1.1.all$contrasts %>% kable(digit=2)
+
+# group contrast
+p3.AsyPtt.m1.2.all <- emmeans(p3.AsyPtt.all.1.aov, pairwise ~ Btw | sResp, type = "response")
+p3.AsyPtt.m1.2.all$contrasts %>% kable(digits=3)
+```
+
+각 집단에서 출처 반응에 따른 사후 분석 결과, 실험 집단에서 **List 1 Correct**는 **List 2 Correct**보다 유의하게 높은 정확도를 보였다. 
+각 출처 반응에서 집단 간의 차이를 사후 분석한 결과, 모든 비교에서 유의한 차이가 나타나지 않았다.
+
+<br>
+
+##### 기타 분석
+
+###### 목록 1, 목록 2의 누락 출처 반응
+  
+<br>
+
+두 집단에서 **List 1 Miss**와 **List 2 Miss**의 차이를 분석하기 위해 집단과 반응을 요인으로한 2 X 2 혼합 요인 분산 분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+# List 1 & 2 Error
+p3.AsyPtt.long.all.3 <- p3.AsyPtt.long.all %>% unite(cSrc_Resp, cSrc:Resp, remove=FALSE) %>% 
+  rename(sResp = "cSrc_Resp")
+p3.AsyPtt.long.all.3$sResp <- factor(p3.AsyPtt.long.all.3$sResp)
+p3.AsyPtt.long.all.3 <- p3.AsyPtt.long.all.3 %>% filter(sResp %in% c("List_1_New", "List_2_New"))
+
+p3.AsyPtt.g.all.3 <- p3.AsyPtt.long.all.3 %>% group_by(Btw, sResp) %>%
+  summarise(Rsp.M = mean(Rsp), Rsp.SD = sd(Rsp)) %>% ungroup()
+p3.AsyPtt.g.all.3$Rsp <- p3.AsyPtt.g.all.2$Rsp.M
+p3.AsyPtt.g.all.3$Rsp.se <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all.3, idvar = "SN",
+                                                   measurevar = "Rsp", betweenvars = "Btw", withinvars = "sResp")$se
+p3.AsyPtt.g.all.3$Rsp.ci <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all.3, idvar = "SN",
+                                                   measurevar = "Rsp", betweenvars = "Btw", withinvars = "sResp")$ci
+p3.AsyPtt.g.all.3 %>% kable(digit=2)
+
+p3.AsyPtt.all.3.aov <- aov_ez(id = "SN", dv = "Rsp", data = p3.AsyPtt.long.all.3, between = "Btw", within = "sResp")
+anova(p3.AsyPtt.all.3.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 모든 효과가 유의하지 않았다.
+
+<br>
+
+###### 목록 3 정확반응
+
+<br>
+
+두 집단 간의 **List 3 Correct**를 비교하였다.
+
+```{r, warning=FALSE, message=FALSE}
+# List 3 Correct
+p3.AsyPtt.long.all.4 <- p3.AsyPtt.long.all %>% unite(cSrc_Resp, cSrc:Resp, remove=FALSE) %>% 
+  rename(sResp = "cSrc_Resp")
+p3.AsyPtt.long.all.4$sResp <- factor(p3.AsyPtt.long.all.4$sResp)
+p3.AsyPtt.long.all.4 <- p3.AsyPtt.long.all.4 %>% filter(sResp %in% c("List_3_New"))
+
+p3.AsyPtt.g.all.4 <- p3.AsyPtt.long.all.4 %>% group_by(Btw) %>%
+  summarise(Rsp.M = mean(Rsp), Rsp.SD = sd(Rsp)) %>% ungroup()
+p3.AsyPtt.g.all.4$Rsp.se <- Rmisc::summarySE(data = p3.AsyPtt.long.all.4, 
+                                                   measurevar = "Rsp", groupvars = "Btw")$se
+p3.AsyPtt.g.all.4$Rsp.ci <- Rmisc::summarySE(data = p3.AsyPtt.long.all.4, 
+                                                   measurevar = "Rsp", groupvars = "Btw")$ci
+p3.AsyPtt.g.all.4 %>% kable(digit=2)
+
+p3.AsyPtt.all.4.aov <- aov_ez(id = "SN", dv = "Rsp", data = p3.AsyPtt.long.all.4, between = "Btw")
+anova(p3.AsyPtt.all.4.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, **List 3 Correct**에서 두 집단 간의 차이는 유의하지 않았다.
+
+<br>
+
+###### 목록 3에서의 오경보
+  
+<br>
+  
+**List 3 FA - Day 1**과 **List 3 FA - Day 2**에서 집단과 출처 반응을 요인으로 한 2 X 2 혼합 요인 분산 분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+# List 3 Incorrect Source Response 
+p3.AsyPtt.long.all.5 <- p3.AsyPtt.long.all %>% unite(cSrc_Resp, cSrc:Resp, remove=FALSE) %>% 
+  rename(sResp = "cSrc_Resp")
+p3.AsyPtt.long.all.5$sResp <- factor(p3.AsyPtt.long.all.5$sResp)
+p3.AsyPtt.long.all.5 <- p3.AsyPtt.long.all.5 %>% filter(sResp %in% c("List_3_Day_1", "List_3_Day_2"))
+
+p3.AsyPtt.g.all.5 <- p3.AsyPtt.long.all.5 %>% group_by(Btw, sResp) %>%
+  summarise(Rsp.M = mean(Rsp), Rsp.SD = sd(Rsp)) %>% ungroup()
+p3.AsyPtt.g.all.5$Rsp.se <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all.5, idvar = "SN",
+                                                   measurevar = "Rsp", betweenvars = "Btw", withinvars = "sResp")$se
+p3.AsyPtt.g.all.5$Rsp.ci <- Rmisc::summarySEwithin(data = p3.AsyPtt.long.all.5, idvar = "SN",
+                                                   measurevar = "Rsp", betweenvars = "Btw", withinvars = "sResp")$ci
+p3.AsyPtt.g.all.5 %>% kable(digit=2)
+
+p3.AsyPtt.all.5.aov <- aov_ez(id = "SN", dv = "Rsp", data = p3.AsyPtt.long.all.5, between = "Btw", within = "sResp")
+anova(p3.AsyPtt.all.5.aov, es = "pes") %>% kable(digits=3)
+
+```
+
+분석 결과, 모든 효과가 유의하지 않았다.
+
+<br>
+  
+#### 예측 오류 정도와 기억 갱신 효과의 관계 - 조건 
+  
+<br>
+  
+##### 목록 1 정확 반응
+  
+  각 집단과 예측 오류 조건에서 **List 1 Correct**의 차이가 있는지 확인하기 위해 각 조건에 대한 정확도 평균과 표준편차를 계산하였다.
+아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 오차 막대는 95% 신뢰구간을 표시한다.
+
+```{r, fig.width= 18, fig.height=6}
+## List 1 Correct Response
+# long format
+p3.Acc.long.all.1 <- p3 %>% filter(cSrc == "List_1", cPE != "pe0") %>% group_by(SN, Btw, cPE) %>% 
+  summarise(Acc = mean(Correct)*100) %>% ungroup()
+p3.Acc.long.exp.1 <- p3.Acc.long.all.1 %>% filter(Btw==1)
+p3.Acc.long.con.1 <- p3.Acc.long.all.1 %>% filter(Btw==2)
+
+# wide format
+p3.Acc.swide.all.1 <- p3.Acc.long.all.1 %>% spread(key = cPE, value = Acc)
+p3.Acc.swide.exp.1 <- p3.Acc.swide.all.1 %>% filter(Btw==1)
+p3.Acc.swide.con.1 <- p3.Acc.swide.all.1 %>% filter(Btw==2)
+
+# summary
+p3.Acc.g.all.1 <- p3.Acc.long.all.1 %>%  group_by(Btw, cPE) %>% 
+  summarise(Acc.M = mean(Acc), Acc.SD = sd(Acc)) %>% ungroup() 
+p3.Acc.g.all.1$Acc.se <- Rmisc::summarySEwithin(data = p3.Acc.long.all.1, measurevar = "Acc", 
+                                                idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$se
+p3.Acc.g.all.1$Acc.ci <- Rmisc::summarySEwithin(data = p3.Acc.long.all.1, measurevar = "Acc", 
+                                                idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$ci
+p3.Acc.g.exp.1 <- p3.Acc.g.all.1 %>% filter(Btw==1)
+p3.Acc.g.con.1 <- p3.Acc.g.all.1 %>% filter(Btw==2)
+p3.Acc.g.all.1 %>% kable(digits=2)
+
+
+## plot
+p3.plot2.2.all.1 <- ggplot(p3.Acc.g.all.1, mapping=aes(x=cPE, y=Acc.M, group=Btw)) + 
+  geom_ribbon(aes(ymin=Acc.M-Acc.ci, ymax=Acc.M+Acc.ci, fill=Btw), alpha=0.5) + 
+  geom_line(p3.Acc.g.all.1, mapping = aes(x=cPE, y=Acc.M, color = Btw), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = cPE, y = Acc.M, ymin=Acc.M, ymax=Acc.M, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("#e69f00", "#56b4e9"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#e69f00", "#56b4e9")) +
+  coord_cartesian(ylim = c(30, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "List 1 Correct (%)", fill = 'Group') +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 1 Correct Source Memory") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position = "top")
+
+p3.plot2.2.exp.1 <- ggplot(p3.Acc.g.exp.1, mapping=aes(x=cPE, y=Acc.M, group=1)) + 
+  geom_ribbon(aes(ymin=Acc.M-Acc.ci, ymax=Acc.M+Acc.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=Acc.M, ymax=Acc.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Acc.long.exp.1, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=Acc, group=SN, color=SN)) +
+  geom_point(p3.Acc.long.exp.1, mapping = aes(x=cPE, y=Acc, group=SN, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(30, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "List 1 Correct (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 1 Source Memory (L1>D1; Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+
+p3.plot2.2.con.1 <- ggplot(p3.Acc.g.con.1, mapping=aes(x=cPE, y=Acc.M, group=1)) + 
+  geom_ribbon(aes(ymin=Acc.M-Acc.ci, ymax=Acc.M+Acc.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=Acc.M, ymax=Acc.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Acc.long.con.1, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=Acc, group=SN, color=SN)) +
+  geom_point(p3.Acc.long.con.1, mapping = aes(x=cPE, y=Acc, group=SN, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(30, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "List 1 Correct (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 1 Source Memory (L1>D1; Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+ggpubr::ggarrange(p3.plot2.2.all.1, p3.plot2.2.exp.1, p3.plot2.2.con.1, ncol=3, labels = c("A) All Group", "B) Experimental", "C) Control")) 
+```
+
+<br>
+  
+집단과 예측 오류 조건을 요인으로한 2 X 3 혼합 요인 분산분석을 수행하였다.
+  
+```{r, warning=FALSE, message=FALSE}
+p3.Acc.all.aov.1 <- aov_ez(id = "SN", dv = "Acc", data = p3.Acc.long.all.1, between = "Btw", within = "cPE")
+anova(p3.Acc.all.aov.1, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 예측 오류의 주효과가 유의하였다. 
+
+```{r, warning=FALSE, message=FALSE}
+p3.Acc.all.aov.1.ph1 <- emmeans(p3.Acc.all.aov.1, pairwise ~ cPE | Btw, type = "response")
+p3.Acc.all.aov.1.ph1$contrasts %>% kable(digits=3)
+
+p3.Acc.all.aov.1.ph2 <- emmeans(p3.Acc.all.aov.1, pairwise ~ Btw | cPE, type = "response")
+p3.Acc.all.aov.1.ph2$contrasts %>% kable(digits=3)
+
+```
+
+집단에서 예측 오류에 따른 **List 1 Correct** 분석 결과, 통제집단에서 `PE 4` 조건은 `PE 1` 조건보다 유의하게 높은 **List 1 Correct** 수준을 보였다.
+
+<br>
+
+##### 목록 1 출처 혼동
+  
+<br>
+  
+  **Source Confusion**에서 집단과 예측 오류 조건에 따른 평균과 표준편차를 계산하였다. 아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 빨간 리본은 95% 신뢰구간을 나타낸다. 
+
+<br>
+  
+```{r, fig.width= 18, fig.height=6}
+## List 1 Source Confusion
+# long format
+p3.Err.long.all <- p3 %>% filter(cSrc == "List_1", cPE != "pe0") %>% group_by(SN, Btw, cPE) %>% 
+  summarise(Error = mean(Err)*100) %>% ungroup()
+p3.Err.wide.all <- p3.Err.long.all %>% spread(key = cPE, value = Error)
+p3.Err.long.all <- gather(p3.Err.wide.all, cPE, Error, pe1:pe4, factor_key=TRUE)
+p3.Err.long.all[is.na(p3.Err.long.all)] <- 0 
+p3.Err.long.all <- arrange(p3.Err.long.all, SN, Btw, Error)
+p3.Err.long.exp <- p3.Err.long.all %>% filter(Btw==1)
+p3.Err.long.con <- p3.Err.long.all %>% filter(Btw==2)
+
+# wide format
+p3.Err.swide.all <- p3.Err.long.all %>% spread(key = cPE, value = Error)
+p3.Err.swide.exp <- p3.Err.swide.all %>% filter(Btw==1)
+p3.Err.swide.con <- p3.Err.swide.all %>% filter(Btw==2)
+
+# summary
+p3.Err.g.all <- p3.Err.long.all %>%  group_by(Btw, cPE) %>% 
+  summarise(Err.M = mean(Error), Err.SD = sd(Error)) %>% ungroup()
+p3.Err.g.all$Err.se <- Rmisc::summarySEwithin(data = p3.Err.long.all, measurevar = "Error", 
+                                              idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$se
+p3.Err.g.all$Err.ci <- Rmisc::summarySEwithin(data = p3.Err.long.all, measurevar = "Error", 
+                                              idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$ci
+p3.Err.g.exp <- p3.Err.g.all %>% filter(Btw==1)
+p3.Err.g.con <- p3.Err.g.all %>% filter(Btw==2)
+p3.Err.g.all %>% kable(digits=2)
+
+## plot 
+p3.plot2.3.all.1 <- ggplot(p3.Err.g.all, mapping=aes(x=cPE, y=Err.M, group=Btw)) + 
+  geom_ribbon(aes(ymin=Err.M-Err.ci, ymax=Err.M+Err.ci, fill=Btw), alpha=0.5) + 
+  geom_line(p3.Err.g.all, mapping = aes(x=cPE, y=Err.M, color = Btw), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = cPE, y = Err.M, ymin=Err.M, ymax=Err.M, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("#e69f00", "#56b4e9"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#e69f00", "#56b4e9")) +
+  coord_cartesian(ylim = c(0, 80), clip = "on") +
+  labs(x = "Prediction Error", y = "Source Confusion (%)", fill = 'Group') +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 1 Source Confusion") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position="top")
+
+p3.plot2.3.exp <- ggplot(p3.Err.g.exp, mapping=aes(x=cPE, y=Err.M, group=1)) + 
+  geom_ribbon(aes(ymin=Err.M-Err.ci, ymax=Err.M+Err.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=Err.M, ymax=Err.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Err.long.exp, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=Error, group=SN, color=SN)) +
+  geom_point(p3.Err.long.exp, mapping = aes(x=cPE, y=Error, group=SN, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(0, 80), clip = "on") +
+  labs(x = "Prediction Error", y = "Source Confusion (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("Source Confusions (L1>D2; Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+p3.plot2.3.con <- ggplot(p3.Err.g.con, mapping=aes(x=cPE, y=Err.M, group=1)) + 
+  geom_ribbon(aes(ymin=Err.M-Err.ci, ymax=Err.M+Err.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=Err.M, ymax=Err.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Err.long.con, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=Error, group=SN, color=SN)) +
+  geom_point(p3.Err.long.con, mapping = aes(x=cPE, y=Error, group=SN, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(0, 80), clip = "on") +
+  labs(x = "Prediction Error", y = "Source Confusion (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("Source Confusions (L1>D2; Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+ggpubr::ggarrange(p3.plot2.3.all.1, p3.plot2.3.exp, p3.plot2.3.con, ncol=3, labels = c("A) All Group", "B) Experimental", "C) Control")) 
+```
+
+<br>
+  
+  **Source Confusion**이 집단, 예측 오류 조건에 따라 다른지 살펴보기 위해, 2 X 4 혼합 요인 분산분석을 수행하였다.
+
+<br>
+  
+```{r, warning=FALSE, message=FALSE}
+p3.Err.all.aov <- aov_ez(id = "SN", dv = "Error", data = p3.Err.long.all, between = "Btw", within = "cPE")
+anova(p3.Err.all.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 예측 오류 조건의 주효과가 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p3.scnf.m1.all <- emmeans(p3.Err.all.aov, pairwise ~ cPE | Btw, type = "response")
+p3.scnf.m1.all$contrasts %>% kable(digits=3)
+
+p3.scnf.m2.all <- emmeans(p3.Err.all.aov, pairwise ~ Btw | cPE, type = "response")
+p3.scnf.m2.all$contrasts %>% kable(digits=3)
+```
+
+집단에서 예측 오류에 따른 **Source Confusion** 차이를 살펴본 겨과, 실험 집단에서 `PE 1` 조건은 `PE 3`, `PE 4` 조건보다 낮은 **Source Confusion** 수준을 보였다. 통제 집단에서는 `PE 1` 조건이 `PE 4` 조건보다 낮은 **Source Confusion**을 보였다.
+
+<br>
+
+##### 목록 2 정확 반응
+  
+<br>
+
+  **List 2 Correct**에서 집단과 예측 오류 조건에 따른 평균과 표준편차를 계산하였다.
+아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 오차 막대는 95% 신뢰구간을 표시한다.
+
+<br>
+  
+```{r, fig.width= 18, fig.height=6}
+## List 2 Correct Source Memory
+# long format
+p3.Acc.long.all.2 <- p3 %>% filter(cSrc == "List_2", cPE != "pe0") %>% group_by(SN, Btw, cPE) %>% 
+  summarise(Acc = mean(Correct)*100) %>% ungroup()
+p3.Acc.long.exp.2 <- p3.Acc.long.all.2 %>% filter(Btw==1)
+p3.Acc.long.con.2 <- p3.Acc.long.all.2 %>% filter(Btw==2)
+
+# wide format
+p3.Acc.swide.all.2 <- p3.Acc.long.all.2 %>% spread(key = cPE, value = Acc)
+p3.Acc.swide.exp.2 <- p3.Acc.swide.all.2 %>% filter(Btw==1)
+p3.Acc.swide.con.2 <- p3.Acc.swide.all.2 %>% filter(Btw==2)
+
+# summary
+p3.Acc.g.all.2 <- p3.Acc.long.all.2 %>%  group_by(Btw, cPE) %>% 
+  summarise(Acc.M = mean(Acc), Acc.SD = sd(Acc)) %>% ungroup() 
+p3.Acc.g.all.2$Acc.se <- Rmisc::summarySEwithin(data = p3.Acc.long.all.2, measurevar = "Acc", 
+                                                idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$se
+p3.Acc.g.all.2$Acc.ci <- Rmisc::summarySEwithin(data = p3.Acc.long.all.2, measurevar = "Acc", 
+                                                idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$ci
+p3.Acc.g.exp.2 <- p3.Acc.g.all.2 %>% filter(Btw==1)
+p3.Acc.g.con.2 <- p3.Acc.g.all.2 %>% filter(Btw==2)
+p3.Acc.g.all.2 %>% kable(digits=2)
+
+## plot
+p3.plot2.2.all.2 <- ggplot(p3.Acc.g.all.2, mapping=aes(x=cPE, y=Acc.M, group=Btw)) + 
+  geom_ribbon(aes(ymin=Acc.M-Acc.ci, ymax=Acc.M+Acc.ci, fill=Btw), alpha=0.5) + 
+  geom_line(p3.Acc.g.all.2, mapping = aes(x=cPE, y=Acc.M, color = Btw), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = cPE, y = Acc.M, ymin=Acc.M, ymax=Acc.M, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("#e69f00", "#56b4e9"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#e69f00", "#56b4e9")) +
+  coord_cartesian(ylim = c(30, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "List 2 Correct (%)", fill = 'Group') +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 2 Correct Source Memory") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position = "top")
+p3.plot2.2.exp.2 <- ggplot(p3.Acc.g.exp.2, mapping=aes(x=cPE, y=Acc.M, group=1)) + 
+  geom_ribbon(aes(ymin=Acc.M-Acc.ci, ymax=Acc.M+Acc.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=Acc.M, ymax=Acc.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Acc.long.exp.2, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=Acc, group=SN, color=SN)) +
+  geom_point(p3.Acc.long.exp.2, mapping = aes(x=cPE, y=Acc, group=SN, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(30, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "List 2 Correct (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3","PE 4")) +
+  # ggtitle("List 2 Source Memory (L2>D2; Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+p3.plot2.2.con.2 <- ggplot(p3.Acc.g.con.2, mapping=aes(x=cPE, y=Acc.M, group=1)) + 
+  geom_ribbon(aes(ymin=Acc.M-Acc.ci, ymax=Acc.M+Acc.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=Acc.M, ymax=Acc.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Acc.long.con.2, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=Acc, group=SN, color=SN)) +
+  geom_point(p3.Acc.long.con.2, mapping = aes(x=cPE, y=Acc, group=SN, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(30, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "List 2 Correct (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 2 Source Memory (L2>D2; Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+ggpubr::ggarrange(p3.plot2.2.all.2, p3.plot2.2.exp.2, p3.plot2.2.con.2, ncol=3, labels = c("A) All Group", "B) Experimental", "C) Control")) 
+```
+
+<br>
+  
+**List 2 Correct**에 대하여 집단과 예측 오류 조건을 요인으로한 2 X 4 혼합 요인 분산분석을 수행하였다.
+
+<br>
+  
+```{r, warning=FALSE, message=FALSE}
+p3.Acc2.all.aov <- aov_ez(id = "SN", dv = "Acc", data = p3.Acc.long.all.2, between = "Btw", within = "cPE")
+anova(p3.Acc2.all.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 집단과 예측 오류의 상호작용이 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p3.Acc2.m1.all <- emmeans(p3.Acc2.all.aov, pairwise ~ cPE | Btw, type = "response")
+p3.Acc2.m1.all$contrasts %>% kable(digits = 3)
+
+p3.Acc2.m1.all.2 <- emmeans(p3.Acc2.all.aov, pairwise ~ Btw | cPE, type = "response")
+p3.Acc2.m1.all.2$contrasts %>% kable(digits = 3)
+```
+
+사후 분석 결과, 실험 집단에서 `PE 1` 조건이 `PE 2` 조건보다 유의하게 높은 **List 2 Correct** 수준을 보이는 것으로 나타났다. 또한, `PE 2`보다 `PE 4` 조건이 더 높은 **List 2 Correct**을 보였다. 통제 집단에서는 `PE 3` 조건이 `PE 4` 조건보다 높은 **List 2 Correct** 수준을 보였다. 각 예측 오류 조건에서 두 집단 차이를 살펴본 결과, `PE 2`와 `PE 3`에서 통제 집단이 실험 집단보다 우수한 것으로 나타났다. 
+
+<br>
+  
+##### 목록 2 침범
+  
+<br>
+  
+**Intrusion**의 집단과 예측 오류 조건에 따른 평균과 표준편차를 계산하였다. 아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 빨간 리본은 95% 신뢰구간을 나타낸다. 
+
+<br>
+  
+```{r, fig.width= 18, fig.height=6}
+## List 2 Intrusion
+# long format
+p3.Intru.long.all <- p3 %>% filter(cSrc == "List_2", cPE != "pe0") %>% group_by(SN, Btw, cPE) %>%
+  dplyr::summarise(Intrusion = mean(Int)*100) %>% 
+  ungroup()
+p3.Intru.long.exp <- p3.Intru.long.all %>% filter(Btw==1)
+p3.Intru.long.con <- p3.Intru.long.all %>% filter(Btw==2)
+
+# wide format
+p3.Intru.swide.all <- p3.Intru.long.all %>% spread(key = cPE, value = Intrusion)
+p3.Intru.swide.exp <- p3.Intru.swide.all %>% filter(Btw==1)
+p3.Intru.swide.con <- p3.Intru.swide.all %>% filter(Btw==2)
+
+# summary
+p3.Intru.g.all <- p3.Intru.long.all %>%  group_by(Btw, cPE) %>% 
+  dplyr::summarise(Intru.M = mean(Intrusion), Intru.SD = sd(Intrusion)) %>% ungroup() 
+p3.Intru.g.all$Intru.se <- Rmisc::summarySEwithin(data = p3.Intru.long.all, measurevar = "Intrusion", 
+                                                  idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$se
+p3.Intru.g.all$Intru.ci <- Rmisc::summarySEwithin(data = p3.Intru.long.all, measurevar = "Intrusion", 
+                                                  idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$ci
+p3.Intru.g.exp <- p3.Intru.g.all %>% filter(Btw==1)
+p3.Intru.g.con <- p3.Intru.g.all %>% filter(Btw==2)
+p3.Intru.g.all %>% kable(digits=2)
+
+## plot
+p3.plot2.1.all <- ggplot(p3.Intru.g.all, mapping=aes(x=cPE, y=Intru.M, group=Btw)) + 
+  geom_ribbon(aes(ymin=Intru.M-Intru.ci, ymax=Intru.M+Intru.ci, fill=Btw), alpha=0.5) + 
+  geom_line(p3.Intru.g.all, mapping = aes(x=cPE, y=Intru.M, color = Btw), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = cPE, y = Intru.M, ymin=Intru.M, ymax=Intru.M, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("#e69f00", "#56b4e9"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#e69f00", "#56b4e9")) +
+  coord_cartesian(ylim = c(0, 80), clip = "on") +
+  labs(x = "Prediction Error", y = "Intrusion (%)", fill = 'Group') +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 2 Intrusion") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position = "top")
+
+p3.plot2.1.exp <- ggplot(p3.Intru.g.exp, mapping=aes(x=cPE, y=Intru.M, group=1)) + 
+  geom_ribbon(aes(ymin=Intru.M-Intru.ci, ymax=Intru.M+Intru.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=Intru.M, ymax=Intru.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Intru.long.exp, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=Intrusion, group=SN, color=SN)) +
+  geom_point(p3.Intru.long.exp, mapping = aes(x=cPE, y=Intrusion, group=SN, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(0, 80), clip = "on") +
+  labs(x = "Prediction Error", y = "Intrusion (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("Intrusion (L2>D1; Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+p3.plot2.1.con <- ggplot(p3.Intru.g.con, mapping=aes(x=cPE, y=Intru.M, group=1)) + 
+  geom_ribbon(aes(ymin=Intru.M-Intru.ci, ymax=Intru.M+Intru.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=Intru.M, ymax=Intru.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Intru.long.con, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=Intrusion, group=SN, color=SN)) +
+  geom_point(p3.Intru.long.con, mapping = aes(x=cPE, y=Intrusion, group=SN, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(0, 80), clip = "on") +
+  labs(x = "Prediction Error", y = "Intrusion (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("Intrusion (L2>D1; Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+ggpubr::ggarrange(p3.plot2.1.all, p3.plot2.1.exp, p3.plot2.1.con, ncol=3, labels = c("A) All Group", "B) Experimental", "C) Control")) 
+```
+
+<br>
+  
+**Intrusion**에 대하여 집단과 예측 오류 조건을 요인으로 하는 2 X 4 혼합 요인 분산분석으로 수행하였다.
+
+<br>
+  
+```{r, warning=FALSE, message=FALSE}
+p3.Intru.all.aov <- aov_ez(id = "SN", dv = "Intrusion", data = p3.Intru.long.all, between = "Btw", within = "cPE")
+anova(p3.Intru.all.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 집단과 예측 오류 조건의 상호 작용은 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p3.Intru.m1.all <- emmeans(p3.Intru.all.aov, pairwise ~ cPE | Btw, type = "response")
+p3.Intru.m1.all$contrasts %>% kable(digits=3)
+
+p3.Intru.m2.all <- emmeans(p3.Intru.all.aov, pairwise ~ Btw | cPE, type = "response")
+p3.Intru.m2.all$contrasts %>% kable(digits=3)
+```
+
+분석 결과, 실험 집단에서 `PE 1`은 `PE 2`와 `PE 3`보다 유의하게 낮은 **Intrusion** 반응을 보였으나, `PE 4`와는 유의한 차이를 보이지 않았다. 마찬가지로, `PE 4` 또한 `PE 2`와 `PE 3` 보다 유의하게 낮은 **Intrusion** 반응을 보였다. `PE 2`와 `PE 3` 간의 차이는 유의하지 않았다. 통제 집단에서는 모든 비교에서 유의한 차이가 나타나지 않았다.
+
+```{r, warning=FALSE, message=FALSE}
+# contrast coding practice
+p3.Intru.long.exp$cPE1 <-factor(p3.Intru.long.exp$cPE, levels = c('pe1','pe2','pe3','pe4'))
+# contrasts(p3.Intru.long.exp$cPE1)
+contrasts(p3.Intru.long.exp$cPE1) <- contr.poly
+# contrasts(p3.Intru.long.exp$cPE1) <- contr.sum
+# contrasts(p3.Intru.long.exp$cPE1) <- contr.treatment
+
+contrasts(p3.Intru.long.exp$cPE1)
+# contrasts(p3.Intru.long.exp$cPE1) <- cbind(c(-1,1,1,-1))
+# MM <- model.matrix( ~ 1 + cPE1, data=p3.Intru.long.exp)
+# p3.Intru.long.exp$cPE1cust <- MM[,"cPE11"]
+
+p3.Intru.long.expX <- model.matrix(~ cPE1, data=p3.Intru.long.exp)
+p3.Intru.long.exp[,c("cLinear","cQuadratic","cCubic")] <- p3.Intru.long.expX[,2:4]
+# p3.Intru.Model <- lmer(Intrusion ~ cPE1 + (1|SN), data=p3.Intru.long.exp)
+p3.Intru.Model <- lmer(Intrusion ~ cLinear + cQuadratic + cCubic + (1|SN), data=p3.Intru.long.exp)
+# p3.Intru.Model <- lm(Intrusion ~ cPE1, data=p3.Intru.long.exp)
+summary(p3.Intru.Model)
+
+(aovModel <- anova(p3.Intru.Model))
+# SumSq contrast
+SumSq <- aovModel[1:3,"Sum Sq"]
+names(SumSq) <- c("cLinear","cQuadratic","cCubic")
+SumSq
+
+MuMIn::r.squaredGLMM(p3.Intru.Model)
+
+## ---- echo=TRUE----------------------------------------------------------
+# SumSq effect
+sum(SumSq)
+# r2 alerting
+round(SumSq / sum(SumSq), 2)
+
+p3.Intru.g.exp
+mean(p3.Intru.g.exp$Intru.M)
+p3.Intru.Model <- lmer(Intrusion ~ cPE1 + (1|SN), data=p3.Intru.long.exp)
+round(summary(p3.Intru.Model)$coef,3)
+anova(p3.Intru.Model)
+(p3.Intru.emm <- emmeans(p3.Intru.Model, pairwise ~ cPE1))
+plot(p3.Intru.emm, horizontal=F, comparisons=T)
+
+```
+
+<br>
+  
+##### 기억 갱신 점수
+  
+<br>
+  
+  집단과 예측 오류 조건에 따른 **기억 갱신 점수(Updating Score)**를 살펴보았다. **기억 갱신 점수(Updating Score)**는 **Intrusion**과 **Source Confusion**의 차이로, 출처 기억 반응에서 **Intrusion**과 **Source Confusion**간의 비대칭적 반응 패턴을 반영하기 위해 구성하였다. 양수의 값은 **Intrusion**이 **Source Confusion** 보다 높은 경우를 나타낸다. 각 집단의 참가자별로 **US**의 평균과 표준편차를 계산하였다. 아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 빨간 리본은 95% 신뢰구간을 나타낸다.
+
+<br>
+  
+```{r, fig.width= 18, fig.height=6}
+## Updating Score
+# long format
+p3.us <- merge(p3.Intru.long.all, p3.Err.long.all, key=c(SN,cPE))
+p3.us <- arrange(p3.us, SN, Btw, cPE)
+p3.US.long.all <- p3.us %>% group_by(SN, Btw, cPE) %>% 
+  summarise(US = (Intrusion - Error)) %>% ungroup()
+p3.US.long.exp <- p3.US.long.all %>% filter(Btw==1)
+p3.US.long.con <- p3.US.long.all %>% filter(Btw==2)
+
+# wide format
+p3.US.swide.all <- p3.US.long.all %>% spread(key = cPE, value = US)
+p3.US.swide.exp <- p3.US.swide.all %>% filter(Btw==1)
+p3.US.swide.con <- p3.US.swide.all %>% filter(Btw==2)
+
+# summary
+p3.US.g.all <- p3.US.long.all %>%  group_by(Btw, cPE) %>% 
+  summarise(US.M = mean(US), US.SD = sd(US)) %>% ungroup() 
+p3.US.g.all$US.se <- Rmisc::summarySEwithin(data = p3.US.long.all, measurevar = "US", 
+                                            idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$se
+p3.US.g.all$US.ci <- Rmisc::summarySEwithin(data = p3.US.long.all, measurevar = "US", 
+                                            idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$ci
+p3.US.g.exp <- p3.US.g.all %>% filter(Btw==1)
+p3.US.g.con <- p3.US.g.all %>% filter(Btw==2)
+p3.US.g.all %>% kable(digits=2)
+
+## plot
+p3.plot2.5.all <- ggplot(p3.US.g.all, mapping=aes(x=cPE, y=US.M, group=Btw)) + 
+  geom_ribbon(aes(ymin=US.M-US.ci, ymax=US.M+US.ci, fill=Btw), alpha=0.5) + 
+  geom_line(p3.US.g.all, mapping = aes(x=cPE, y=US.M, color = Btw), size = 1, show.legend = FALSE) +
+  geom_pointrange(aes(x = cPE, y = US.M, ymin=US.M, ymax=US.M, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  scale_fill_manual(values = c("#e69f00", "#56b4e9"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#e69f00", "#56b4e9")) +
+  coord_cartesian(ylim = c(-50, 50), clip = "on") +
+  labs(x = "Prediction Error", y = "US value", fill = 'Group') +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("Update Score") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position = "top")
+p3.plot2.5.exp <- ggplot(p3.US.g.exp, mapping=aes(x=cPE, y=US.M, group=1)) + 
+  geom_ribbon(aes(ymin=US.M-US.ci, ymax=US.M+US.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=US.M, ymax=US.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.US.long.exp, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=US, group=SN, color=SN)) +
+  geom_point(p3.US.long.exp, mapping = aes(x=cPE, y=US, group=SN, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(-50, +50), clip = "on") +
+  labs(x = "Prediction Error", y = "US value") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("Updating Score (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+p3.plot2.5.con <- ggplot(p3.US.g.con, mapping=aes(x=cPE, y=US.M, group=1)) + 
+  geom_ribbon(aes(ymin=US.M-US.ci, ymax=US.M+US.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=US.M, ymax=US.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.US.long.con, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=US, group=SN, color=SN)) +
+  geom_point(p3.US.long.con, mapping = aes(x=cPE, y=US, group=SN, color = SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(-50, +50), clip = "on") +
+  labs(x = "Prediction Error", y = "US valus") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("Updating Score (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+ggpubr::ggarrange(p3.plot2.5.all, p3.plot2.5.exp, p3.plot2.5.con, ncol=3, labels = c("A) All Group", "B) Experimental", "C) Control")) 
+```
+
+<br>
+  
+각 집단과 예측 오류 조건에서의 `US` 차이를 살펴보기 위하여 2 X 4 혼합 요인 분산분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p3.US.all.aov <- aov_ez(id = "SN", dv = "US", data = p3.US.long.all, between = "Btw", within = "cPE")
+anova(p3.US.all.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 예측 오류의 주효과와 집단과 예측 오류 간의 상호작용이 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p3.US.m1.all <- emmeans(p3.US.all.aov, pairwise ~ cPE | Btw, type = "response")
+p3.US.m1.all$contrasts %>% kable(digits = 3)
+
+p3.US.m2.all <- emmeans(p3.US.all.aov, pairwise ~ Btw | cPE, type = "response")
+p3.US.m2.all$contrasts %>% kable(digits = 3)
+```
+
+사후 분석 결과, 실험 집단에서 `PE 1`보다 `PE 2`, `PE 3`이 유의하게 높은 **US**값을 보였다. 다른 차이는 유의하지 않았다. 통제 집단에서는 `PE 1`과 `PE 3`보다 `PE 4`가 유의하게 높은 **US**값을 보였다. 또한 `PE 2`, `PE 3` 조건에서 실험 집단은 통제 집단보다 유의하게 높은 `US`값을 보였다.
+
+<br><br>
+  
+### Day 3 연합 기억 정확도
+  
+<br>
+  
+  이러한 결과가 기억의 손상에 의한 것이 아닌 갱신에 의한 것이라는 점을 확인하기 위해서는 목록 1과 목록 2의 연합 기억이 어느 정도 유지되어 있어야 한다. 또한 본 실험에서 유도한 재공고화, 예측 오류를 수반한 재활성화가 출처 기억 뿐만 아니라 연합 기억에도 영향을 준다면, 각 조건에 따라 일정한 패턴을 확인할 수 있을 것이다. 따라서 집단, 출처 반응, 예측 오류 조건에서의 연합 기억 정확도를 분석하였다. 기억 검사 과제에서 New로 출처 반응을 한 경우에는 연합 기억 검사를 생략하였으므로, List 3과 관련된 연합 기억은 분석할 수 없었다.  
+
+<br>
+  
+#### 집단과 목록에 따른 연합 기억 정확도
+  
+<br>
+  
+  첫째 날과 둘째 날의 연합 기억 학습 수행을 비교한 분석에서는 둘째 날 연합 기억 학습이 첫째 날 연합 기억 학습보다 우수하게 나타났었다. 이러한 결과 패턴이 마지막 날의 연합 기억 검사에서도 유사하게 나타나는지 확인하였다. 또한 두 집단 간의 연합 기억 수행의 차이가 있는지도 확인하였다. 
+
+<br>
+  
+```{r, fig.width=12, fig.height = 6}
+# long format
+p3.day.Asc.long.all <- p3 %>% filter(cSrc != "List_3", Resp != "New") %>% group_by(SN, Btw, cSrc) %>% 
+  summarise(aCorr = mean(aCorr)*100) %>% ungroup
+p3.day.Asc.long.exp <- p3.day.Asc.long.all %>% filter(Btw==1)
+p3.day.Asc.long.con <- p3.day.Asc.long.all %>% filter(Btw==2)
+
+# wide format
+p3.day.Asc.swide.all <- p3.day.Asc.long.all %>% spread(key = cSrc, value = aCorr)
+p3.day.Asc.swide.exp <- p3.day.Asc.swide.all %>% filter(Btw==1)
+p3.day.Asc.swide.con <- p3.day.Asc.swide.all %>% filter(Btw==2)
+
+# summary
+p3.day.Asc.g.all <- p3.day.Asc.long.all %>% group_by(Btw, cSrc) %>% 
+  summarise(aCorr.M = mean(aCorr), aCorr.SD = sd(aCorr)) %>% ungroup()
+p3.day.Asc.g.all$aCorr.se <- Rmisc::summarySEwithin(data = p3.day.Asc.long.all, measurevar = "aCorr", 
+                                                    idvar = "SN", betweenvars = "Btw", withinvars = "cSrc")$se
+p3.day.Asc.g.all$aCorr.ci <- Rmisc::summarySEwithin(data = p3.day.Asc.long.all, measurevar = "aCorr", 
+                                                    idvar = "SN", betweenvars = "Btw", withinvars = "cSrc")$ci  
+p3.day.Asc.g.exp <- p3.day.Asc.g.all %>% filter(Btw==1)
+p3.day.Asc.g.con <- p3.day.Asc.g.all %>% filter(Btw==2)
+p3.day.Asc.g.all %>% kable(digits=2)
+
+## plot
+p3.day.Asc.all.plot.1 <- ggplot(data=p3.day.Asc.long.all, aes(x=Btw, y=aCorr, fill=cSrc)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .7, width = .65, colour="black", size = 1.02) +
+  geom_point(position=position_dodge(0.65), aes(x=Btw, y=aCorr, group=cSrc, color=SN), size = 3, alpha = .4, show.legend = FALSE) +
+  geom_segment(data=filter(p3.day.Asc.swide.all,Btw==1), inherit.aes = FALSE,
+               aes(x=1-.16, y=filter(p3.day.Asc.swide.all,Btw==1)$"List_1",
+                   xend=1+.16, yend=filter(p3.day.Asc.swide.all,Btw==1)$"List_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.day.Asc.swide.all,Btw==2), inherit.aes = FALSE,
+               aes(x=2-.16, y=filter(p3.day.Asc.swide.all,Btw==2)$"List_1",
+                   xend=2+.16, yend=filter(p3.day.Asc.swide.all,Btw==2)$"List_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_pointrange(data=p3.day.Asc.g.all, aes(x = Btw, y = aCorr.M, ymin = aCorr.M-aCorr.ci, ymax = aCorr.M+aCorr.ci),
+                  position = position_dodge(0.65), color = "darkred", size = 1, show.legend = FALSE) +
+  scale_fill_manual(values = c("#feb24c", "#91bfdb"),
+                    labels = c("List 1", "List 2")) +
+  scale_x_discrete(labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(25, 100), clip = "on") +
+  labs(x = "Group", y = "Accuracy (%)", fill ="Object List") +
+  # ggtitle("Association Memory by Group") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"), 
+        legend.position="top")
+
+p3.day.Asc.all.plot.2 <- ggplot(data=p3.day.Asc.long.all, aes(x=cSrc, y=aCorr, fill=Btw)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .7, width = .65, colour="black", size = 1.02) +
+  geom_point(position=position_dodge(0.65), aes(x=cSrc, y=aCorr, group=Btw, color=SN), size = 3, alpha = .4, show.legend = FALSE) +
+  geom_pointrange(data=p3.day.Asc.g.all, aes(x = cSrc, y = aCorr.M, ymin = aCorr.M-aCorr.ci, ymax = aCorr.M+aCorr.ci),
+                  position = position_dodge(0.65), color = "darkred", size = 1, show.legend = FALSE) +
+  scale_fill_manual(values = c("#feb24c", "#91bfdb"),
+                    labels = c("Experimental", "Control")) +
+  scale_x_discrete(labels = c("List 1", "List 2")) +
+  coord_cartesian(ylim = c(25, 100), clip = "on") +
+  labs(x = "Object List", y = "Accuracy (%)", fill ="Group") +
+  # ggtitle("Association Memory by Object List") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"), 
+        legend.position="top")
+
+ggpubr::ggarrange(p3.day.Asc.all.plot.1, p3.day.Asc.all.plot.2, ncol = 2, labels=c("A) Association Memory by Group","B) Association Memory by List"))
+```
+
+집단과 물체 목록을 요인으로 하는 2 X 2 혼합 요인 분산분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p3.day.Asc.all.aov <- aov_ez(id = "SN", dv = "aCorr", data = p3.day.Asc.long.all, between = "Btw", within = c("cSrc"))
+anova(p3.day.Asc.all.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 물체 목록의 주효과는 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p3.day.Asc.m1.all <- emmeans(p3.day.Asc.all.aov, pairwise ~ cSrc | Btw, type = "response")
+p3.day.Asc.m1.all$contrasts %>% kable(digits=3)
+
+p3.day.Asc.m2.all <- emmeans(p3.day.Asc.all.aov, pairwise ~ Btw | cSrc, type = "response")
+p3.day.Asc.m2.all$contrasts %>% kable(digits=3)
+
+```
+
+각 집단 별로 물체 목록에 대한 사후 분석을 수행한 결과, 통제 집단에서 목록 2가 목록 1보다 우수한 연합 기억 수행을 보였다.
+
+<br>
+  
+#### 출처 반응에 따른 연합 기억 정확도
+  
+<br>
+  
+   집단, 물체 목록에서 출처 반응에 따라 연합 기억이 어떻게 나타나는지 살펴보기 위해, 각 조건에 대한 연합 기억 정확도 평균과 표준편차를 계산하였다. 아래의 그래프에서 A는 전체 집단, B, C는 각 집단을 나타내며, 빨간 점은 평균, 오차 막대는 95% 신뢰구간을 표시한다.
+
+<br>
+  
+```{r, fig.width=12, fig.height = 12}
+# long format
+p3.AsyPtt.Asc.long.all <- p3 %>% filter(cSrc != "List_3", Resp != "New") %>% group_by(SN, Btw, cSrc, Resp) %>%
+  summarise(aCorr = mean(aCorr)*100) %>% ungroup()
+p3.AsyPtt.Asc.wide.all <- p3.AsyPtt.Asc.long.all %>% spread(key = Resp, value = aCorr)
+p3.AsyPtt.Asc.long.all <- gather(p3.AsyPtt.Asc.wide.all, Resp, aCorr, Day_1:Day_2, factor_key=TRUE)
+p3.AsyPtt.Asc.long.all[is.na(p3.AsyPtt.Asc.long.all)] <- 0 
+p3.AsyPtt.Asc.long.all <- arrange(p3.AsyPtt.Asc.long.all, SN, cSrc, Resp, aCorr)
+p3.AsyPtt.Asc.long.exp <- p3.AsyPtt.Asc.long.all %>% filter(Btw==1)
+p3.AsyPtt.Asc.long.con <- p3.AsyPtt.Asc.long.all %>% filter(Btw==2)
+
+# wide format
+p3.AsyPtt.Asc.swide.all <- p3.AsyPtt.Asc.long.all %>% spread(key = Resp, value = aCorr)
+p3.AsyPtt.Asc.swide.exp <- p3.AsyPtt.Asc.swide.all %>% filter(Btw==1)
+p3.AsyPtt.Asc.swide.con <- p3.AsyPtt.Asc.swide.all %>% filter(Btw==2)
+
+# summary
+p3.AsyPtt.Asc.g.all <- p3.AsyPtt.Asc.long.all %>% group_by(Btw, cSrc, Resp) %>% 
+  summarise(aCorr.M = mean(aCorr), aCorr.SD = sd(aCorr)) %>% ungroup()
+p3.AsyPtt.Asc.g.all$aCorr.se <- Rmisc::summarySEwithin(data = p3.AsyPtt.Asc.long.all, measurevar = "aCorr", 
+                                                       idvar = "SN", betweenvars = "Btw", withinvars = c("cSrc","Resp"))$se
+p3.AsyPtt.Asc.g.all$aCorr.ci <- Rmisc::summarySEwithin(data = p3.AsyPtt.Asc.long.all, measurevar = "aCorr", 
+                                                       idvar = "SN", betweenvars = "Btw", withinvars = c("cSrc","Resp"))$ci  
+p3.AsyPtt.Asc.g.exp <- p3.AsyPtt.Asc.g.all %>% filter(Btw==1)
+p3.AsyPtt.Asc.g.con <- p3.AsyPtt.Asc.g.all %>% filter(Btw==2)
+p3.AsyPtt.Asc.g.all %>% kable(digits=2)
+
+## plot
+p3.Asc.all.plot3 <- ggplot(data=p3.AsyPtt.Asc.long.all, aes(x=Resp, y=aCorr, fill=Btw)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .9, width = 0.8, colour="black", size = 1.02) +
+  geom_pointrange(data=p3.AsyPtt.Asc.g.all, aes(x = Resp, y=aCorr.M, ymin = aCorr.M - aCorr.ci, ymax = aCorr.M + aCorr.ci),
+                  position = position_dodge(0.80), color = "darkred", size = 1, show.legend = FALSE) +
+  facet_grid(.~cSrc, scales="free_x", 
+             labeller = labeller(cSrc = c("List_1" = "List 1 (Day 1)","List_2" = "List 2 (Day 2)"))) +
+  scale_x_discrete(labels=c("Day 1", "Day 2")) +
+  scale_fill_manual(values = c("#feb24c", "#91bfdb"),
+                    labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(0, 105), clip = "on") +
+  labs(x = "Source Response by Object List", y = "Association Accuracy (%)", fill ="Group") +
+  # ggtitle("Association Memory Response") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        strip.text.x = element_text(face = "plain", size = 15, color = "black"),
+        strip.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.spacing=unit(1, "lines"),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"), 
+        # plot.title = element_text(hjust = 0.5),
+        legend.position="top")
+p3.Asc.exp.plot3 <- ggplot(data=p3.AsyPtt.Asc.long.exp, aes(x=cSrc, y=aCorr, fill=Resp)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .7, width = .65, colour="black", size = 1.02) +
+  geom_point(position=position_dodge(0.65), aes(x=cSrc, y=aCorr, group=Resp, color=SN), size = 3, alpha = .4, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.Asc.swide.exp,cSrc=="List_1"), inherit.aes = FALSE,
+               aes(x=1-.16, y=filter(p3.AsyPtt.Asc.swide.exp,cSrc=="List_1")$"Day_1",
+                   xend=1+.16, yend=filter(p3.AsyPtt.Asc.swide.exp,cSrc=="List_1")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.Asc.swide.exp,cSrc=="List_2"), inherit.aes = FALSE,
+               aes(x=2-.16, y=filter(p3.AsyPtt.Asc.swide.exp,cSrc=="List_2")$"Day_1",
+                   xend=2+.16, yend=filter(p3.AsyPtt.Asc.swide.exp,cSrc=="List_2")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_pointrange(data=p3.AsyPtt.Asc.g.exp, aes(x = cSrc, y = aCorr.M, ymin = aCorr.M-aCorr.ci, ymax = aCorr.M+aCorr.ci),
+                  position = position_dodge(0.65), color = "darkred", size = 1, show.legend = FALSE) +
+  scale_fill_manual(values = c("#56b4e9", "#e69f00", "#ff6164"),
+                    labels = c("Day 1", "Day 2")) +
+  scale_x_discrete(labels = c("List 1", "List 2")) +
+  coord_cartesian(ylim = c(25, 100), clip = "on") +
+  labs(x = "Object List", y = "Association Accuracy (%)", fill ="Attribution") +
+  # ggtitle("Association Memory (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"), 
+        legend.position="top")
+p3.Asc.con.plot3 <- ggplot(data=p3.AsyPtt.Asc.long.con, aes(x=cSrc, y=aCorr, fill=Resp)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .7, width = .65, colour="black", size = 1.02) +
+  geom_point(position=position_dodge(0.65), aes(x=cSrc, y=aCorr, group=Resp, color=SN), size = 3, alpha = .4, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.Asc.swide.con,cSrc=="List_1"), inherit.aes = FALSE,
+               aes(x=1-.16, y=filter(p3.AsyPtt.Asc.swide.con,cSrc=="List_1")$"Day_1",
+                   xend=1+.16, yend=filter(p3.AsyPtt.Asc.swide.con,cSrc=="List_1")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_segment(data=filter(p3.AsyPtt.Asc.swide.con,cSrc=="List_2"), inherit.aes = FALSE,
+               aes(x=2-.16, y=filter(p3.AsyPtt.Asc.swide.con,cSrc=="List_2")$"Day_1",
+                   xend=2+.16, yend=filter(p3.AsyPtt.Asc.swide.con,cSrc=="List_2")$"Day_2", color=SN),
+               size = 1, alpha = 0.3, show.legend = FALSE) +
+  geom_pointrange(data=p3.AsyPtt.Asc.g.con, aes(x = cSrc, y = aCorr.M, ymin = aCorr.M-aCorr.ci, ymax = aCorr.M+aCorr.ci),
+                  position = position_dodge(0.65), color = "darkred", size = 1, show.legend = FALSE) +
+  scale_fill_manual(values = c("#56b4e9", "#e69f00", "#ff6164"),
+                    labels = c("Day 1", "Day 2")) +
+  scale_x_discrete(labels = c("List 1", "List 2")) +
+  coord_cartesian(ylim = c(25, 100), clip = "on") +
+  labs(x = "Object List", y = "Association Accuracy (%)", fill ="Attribution") +
+  # ggtitle("Association Memory (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"), 
+        legend.position="top")
+ggpubr::ggarrange(p3.Asc.all.plot3, labels = "A) All Group",
+          ggpubr::ggarrange(p3.Asc.exp.plot3, p3.Asc.con.plot3, ncol = 2, labels = c("B) Experimental", "C) Control")), 
+          nrow = 2)
+```
+
+<br>
+  
+##### 목록 1, 목록 2의 출처 반응에 따른 연합 기억 정확도
+  
+<br>
+  
+`List 1`, `List 2` 에서 집단과 출처 반응에 따른 연합 기억 정확도의 차이를 분석하였다. 
+참가자 간 변인인 집단과 참가자 내 변인인 출처 반응을 요인으로 한 2 X 2 혼합 요인 분산분석을 수행하였다.
+
+```{r, warning=FALSE, message=FALSE}
+# List 1 & 2 Association Memory by Source Response
+p3.AsyPtt.Asc.long.all.1 <- p3.AsyPtt.Asc.long.all %>% unite(cSrc_Resp, cSrc:Resp, remove=FALSE) %>% 
+  rename(sResp = "cSrc_Resp") 
+p3.AsyPtt.Asc.long.all.1$sResp <- factor(p3.AsyPtt.Asc.long.all.1$sResp)
+# p3.AsyPtt.Asc.long.all.1 <- p3.AsyPtt.Asc.long.all.1 %>% filter(sResp %in% c("List_1_Day_1", "List_2_Day_2"))
+# p3.AsyPtt.Asc.long.all.1 %>% kable(digits=3)
+
+p3.AsyPtt.Asc.g.all.1 <- p3.AsyPtt.Asc.long.all.1 %>% group_by(Btw, sResp) %>%
+  summarise(aCorr.M = mean(aCorr), aCorr.SD = sd(aCorr)) %>% ungroup()
+p3.AsyPtt.Asc.g.all.1$aCorr <- p3.AsyPtt.Asc.g.all.1$aCorr.M
+p3.AsyPtt.Asc.g.all.1$aCorr.se <- Rmisc::summarySEwithin(data = p3.AsyPtt.Asc.long.all.1, idvar = "SN",
+                                                         measurevar = "aCorr", betweenvars = "Btw", withinvars = "sResp")$se
+p3.AsyPtt.Asc.g.all.1$aCorr.ci <- Rmisc::summarySEwithin(data = p3.AsyPtt.Asc.long.all.1, idvar = "SN",
+                                                         measurevar = "aCorr", betweenvars = "Btw", withinvars = "sResp")$ci
+p3.AsyPtt.Asc.g.all.1 %>% kable(digits=2)
+
+p3.AsyPtt.Asc.all.1.aov <- aov_ez(id = "SN", dv = "aCorr", data = p3.AsyPtt.Asc.long.all.1, between = "Btw", within = "sResp")
+anova(p3.AsyPtt.Asc.all.1.aov, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 출처 반응의 주효과가 유의하였다.
+
+```{r, warning=FALSE, message=FALSE}
+p3.AsyPtt.Asc.m1.1.all <- emmeans(p3.AsyPtt.Asc.all.1.aov, pairwise ~ sResp | Btw, type = "response")
+p3.AsyPtt.Asc.m1.1.all$contrasts %>% kable(digits=3)
+
+p3.AsyPtt.Asc.m1.2.all <- emmeans(p3.AsyPtt.Asc.all.1.aov, pairwise ~ Btw | sResp, type = "response")
+p3.AsyPtt.Asc.m1.2.all$contrasts %>% kable(digits=3)
+```
+
+출처 반응에 따른 사후 분석을 수행한 결과, 통제 집단의 **List 2 Correct**의 연합 기억은 **Source Confusion** 보다 유의하게 높은 연합 기억 정확도를 보였다. 이 외에 다른 비교들은 유의하지 않았다. 각 출처 반응에서 집단 간의 차이에 대한 사후 분석 결과, 모든 비교에서 유의한 차이가 나타나지 않았다.
+
+<br>
+  
+#### 예측 오류 정도에 따른 연합 기억 정확도
+  
+<br>
+  
+  집단, 예측 오류 조건에 따른 연합 기억 정확도가 예측 오류 수준에 따라 다른지 살펴보기 위한 분석을 수행하였다. 출처 기억 확신도 분석과 유사하게 각 출처 반응을 예측 오류 조건으로 구분하였을 때 시행수가 충분하지 않은 경우에는 연합 기억 정확도의 평균이 대표성을 가지지 못할 수 있다. 따라서 각 출처 반응에서의 시행수를 확인하였다.
+
+```{r}
+# The number of trials per condition
+p3 %>% filter(cSrc!="List_3", Resp!="New") %>% 
+  group_by(SN, cSrc, Resp, cPE) %>% 
+  summarise(NumTrial = length(aResp)) %>% 
+  ungroup %>% 
+  group_by(cSrc, Resp, cPE) %>%
+  summarise(Avg = mean(NumTrial), 
+            Med = median(NumTrial), 
+            Min = min(NumTrial), 
+            Max = max(NumTrial)) %>% 
+  ungroup %>% kable(digits=3)
+```
+
+각 출처 반응의 시행수에서 **Source Confusion**,  **Intrusion**은 각 예측 오류 조건에서 평균 시행수가 10시행에 미치지 못하므로 분석에서 제외하였다. 따라서 출처 반응의 종속 변인 중 **List 1 Correct**, **List 2 Correct**에서 집단과 예측 오류 조건에 따른 차이를 비교하였다. 
+
+<br>
+  
+##### 목록 1 정확반응에서의 연합 기억 정확도
+  
+<br>
+  
+  **List 1 Correct** 출처 반응에서 집단과 예측 오류 조건에 따라 연합 기억 수준이 다른지 살펴보았다. 각 조건의 평균과 표준편차를 계산하였다.
+아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 빨간 리본은 95% 신뢰구간을 나타낸다. 
+
+<br>
+  
+```{r, fig.width= 18, fig.height=6}
+## List 1 Association Memory of Correct Response
+# long format
+p3.Acc.Asc.long.all.1 <- p3 %>% filter(cPE != "pe0", Correct == 1, cSrc == "List_1") %>% group_by(SN, Btw, cPE) %>% 
+  summarise(aCorr = mean(aCorr)*100) %>% ungroup()
+p3.Acc.Asc.long.exp.1 <- p3.Acc.Asc.long.all.1 %>% filter(Btw==1)
+p3.Acc.Asc.long.con.1 <- p3.Acc.Asc.long.all.1 %>% filter(Btw==2)
+
+# wide format
+p3.Acc.Asc.swide.all.1 <- p3.Acc.Asc.long.all.1 %>% spread(key = cPE, value = aCorr)
+p3.Acc.Asc.swide.exp.1 <- p3.Acc.Asc.swide.all.1 %>% filter(Btw==1)
+p3.Acc.Asc.swide.con.1 <- p3.Acc.Asc.swide.all.1 %>% filter(Btw==2)
+
+# summary
+p3.Acc.Asc.g.all.1 <- p3.Acc.Asc.long.all.1 %>%  group_by(Btw, cPE) %>% 
+  summarise(aCorr.M = mean(aCorr), aCorr.SD = sd(aCorr)) %>% ungroup() 
+p3.Acc.Asc.g.all.1$aCorr.se <- Rmisc::summarySEwithin(data = p3.Acc.Asc.long.all.1, measurevar = "aCorr", 
+                                                      idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$se
+p3.Acc.Asc.g.all.1$aCorr.ci <- Rmisc::summarySEwithin(data = p3.Acc.Asc.long.all.1, measurevar = "aCorr", 
+                                                      idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$ci
+p3.Acc.Asc.g.exp.1 <- p3.Acc.Asc.g.all.1 %>% filter(Btw==1)
+p3.Acc.Asc.g.con.1 <- p3.Acc.Asc.g.all.1 %>% filter(Btw==2)
+p3.Acc.Asc.g.all.1 %>% kable(digits=2)
+
+
+## plot
+
+p3.Asc.all.plot4.2.1 <- ggplot(p3.Acc.Asc.g.all.1, mapping=aes(x=cPE, y=aCorr.M, group=Btw)) + 
+  geom_ribbon(aes(ymin=aCorr.M-aCorr.ci, ymax=aCorr.M+aCorr.ci, fill=Btw), alpha=0.5) +
+  geom_line(p3.Acc.Asc.g.all.1, mapping=aes(x=cPE, y=aCorr.M, color=Btw), size =1, show.legend = FALSE) +
+  geom_pointrange(aes(x = cPE, ymin=aCorr.M, ymax=aCorr.M, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  coord_cartesian(ylim = c(20, 100), clip = "on") +
+  scale_fill_manual(values = c("#e69f00", "#56b4e9"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#e69f00", "#56b4e9")) + 
+  labs(x = "Prediction Error", y = "Association Accuracy (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 1 AM of Correct Source (All Group)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position = "top")
+p3.Asc.exp.plot4.2.1 <- ggplot(p3.Acc.Asc.g.exp.1, mapping=aes(x=cPE, y=aCorr.M, group=1)) + 
+  geom_ribbon(aes(ymin=aCorr.M-aCorr.ci, ymax=aCorr.M+aCorr.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=aCorr.M, ymax=aCorr.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Acc.Asc.long.exp.1, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=aCorr, group=SN, color=SN)) +
+  geom_point(p3.Acc.Asc.long.exp.1, mapping = aes(x=cPE, y=aCorr, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(20, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "Association Accuracy (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 1 AM of Correct Source (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+p3.Asc.con.plot4.2.1 <- ggplot(p3.Acc.Asc.g.con.1, mapping=aes(x=cPE, y=aCorr.M, group=1)) + 
+  geom_ribbon(aes(ymin=aCorr.M-aCorr.ci, ymax=aCorr.M+aCorr.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=aCorr.M, ymax=aCorr.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Acc.Asc.long.con.1, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=aCorr, group=SN, color=SN)) +
+  geom_point(p3.Acc.Asc.long.con.1, mapping = aes(x=cPE, y=aCorr, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(20, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "Association Accuracy (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 1 AM of Correct Source (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+ggpubr::ggarrange(p3.Asc.all.plot4.2.1,p3.Asc.exp.plot4.2.1, p3.Asc.con.plot4.2.1, ncol=3, labels=c("A) All Group", "B) Experimental", "C) Control"))
+
+```
+
+<br>
+  
+집단과 예측 오류 조건을 요인으로 2 X 4 혼합 요인 분산분석을 수행하였다.
+
+<br>
+  
+```{r, warning=FALSE, message=FALSE}
+p3.Acc.all.aov.Asc.1 <- aov_ez(id = "SN", dv = "aCorr", data = p3.Acc.Asc.long.all.1, between = "Btw", within = "cPE")
+anova(p3.Acc.all.aov.Asc.1, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 모든 효과가 유의하지 않았다.
+
+<br>
+  
+##### 목록 2 정확반응에서의 연합 기억 정확도
+  
+<br>
+  
+  **List 2 Correct** 출처 반응에서 집단과 예측 오류 조건에 따라 연합 기억 수준이 다른지 살펴보았다. 각 조건의 평균과 표준편차를 계산하였다.
+아래의 그래프에서 A는 전체 집단, B는 실험 집단, C는 통제 집단을 나타내며, 빨간 점은 평균, 빨간 리본은 95% 신뢰구간을 나타낸다. 
+
+<br>
+  
+```{r, fig.width= 18, fig.height=6}
+## List 2 Association Memory of Correct Source Response
+# long format
+p3.Acc.Asc.long.all.2 <- p3 %>% filter(cPE != "pe0", Correct == 1, cSrc == "List_2") %>% group_by(SN, Btw, cPE) %>% 
+  summarise(aCorr = mean(aCorr)*100) %>% ungroup()
+p3.Acc.Asc.long.exp.2 <- p3.Acc.Asc.long.all.2 %>% filter(Btw==1)
+p3.Acc.Asc.long.con.2 <- p3.Acc.Asc.long.all.2 %>% filter(Btw==2)
+
+# wide format
+p3.Acc.Asc.swide.all.2 <- p3.Acc.Asc.long.all.2 %>% spread(key = cPE, value = aCorr)
+p3.Acc.Asc.swide.exp.2 <- p3.Acc.Asc.swide.all.2 %>% filter(Btw==1)
+p3.Acc.Asc.swide.con.2 <- p3.Acc.Asc.swide.all.2 %>% filter(Btw==2)
+
+# summary
+p3.Acc.Asc.g.all.2 <- p3.Acc.Asc.long.all.2 %>%  group_by(Btw, cPE) %>% 
+  summarise(aCorr.M = mean(aCorr), aCorr.SD = sd(aCorr)) %>% ungroup() 
+p3.Acc.Asc.g.all.2$aCorr.se <- Rmisc::summarySEwithin(data = p3.Acc.Asc.long.all.2, measurevar = "aCorr", 
+                                                      idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$se
+p3.Acc.Asc.g.all.2$aCorr.ci <- Rmisc::summarySEwithin(data = p3.Acc.Asc.long.all.2, measurevar = "aCorr", 
+                                                      idvar = "SN", betweenvars = "Btw", withinvars = "cPE")$ci
+p3.Acc.Asc.g.exp.2 <- p3.Acc.Asc.g.all.2 %>% filter(Btw==1)
+p3.Acc.Asc.g.con.2 <- p3.Acc.Asc.g.all.2 %>% filter(Btw==2)
+p3.Acc.Asc.g.all.2 %>% kable(digits=2)
+
+
+## plot
+p3.Asc.all.plot4.2.2 <- ggplot(p3.Acc.Asc.g.all.2, mapping=aes(x=cPE, y=aCorr.M, group=Btw)) + 
+  geom_ribbon(aes(ymin=aCorr.M-aCorr.ci, ymax=aCorr.M+aCorr.ci, fill=Btw), alpha=0.5) +
+  geom_line(p3.Acc.Asc.g.all.2, mapping=aes(x=cPE, y=aCorr.M, color=Btw), size =1, show.legend = FALSE) +
+  geom_pointrange(aes(x = cPE, ymin=aCorr.M, ymax=aCorr.M, color=Btw), position = position_dodge(0), 
+                  size = 0.8, show.legend = FALSE) +
+  coord_cartesian(ylim = c(20, 100), clip = "on") +
+  scale_fill_manual(values = c("#e69f00", "#56b4e9"), labels = c("Experimental", "Control")) +
+  scale_color_manual(values = c("#e69f00", "#56b4e9")) + 
+  labs(x = "Prediction Error", y = "Association Accuracy (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 2 AM of Correct Source (All Group)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"),
+        legend.position = "top")
+p3.Asc.exp.plot4.2.2 <- ggplot(p3.Acc.Asc.g.exp.2, mapping=aes(x=cPE, y=aCorr.M, group=1)) + 
+  geom_ribbon(aes(ymin=aCorr.M-aCorr.ci, ymax=aCorr.M+aCorr.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=aCorr.M, ymax=aCorr.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Acc.Asc.long.exp.2, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=aCorr, group=SN, color=SN)) +
+  geom_point(p3.Acc.Asc.long.exp.2, mapping = aes(x=cPE, y=aCorr, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(20, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "Association Accuracy (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 2 AM of Correct Source (Exp)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+p3.Asc.con.plot4.2.2 <- ggplot(p3.Acc.Asc.g.con.2, mapping=aes(x=cPE, y=aCorr.M, group=1)) + 
+  geom_ribbon(aes(ymin=aCorr.M-aCorr.ci, ymax=aCorr.M+aCorr.ci), fill="darkred", alpha=0.3) + geom_line(colour="darkred", size = 1) +
+  geom_pointrange(aes(x = cPE, ymin=aCorr.M, ymax=aCorr.M), position = position_dodge(0.65), 
+                  color = "darkred", size = 0.8, show.legend = FALSE) +
+  geom_line(p3.Acc.Asc.long.con.2, alpha = 0.7, show.legend = FALSE,
+            mapping=aes(x=cPE, y=aCorr, group=SN, color=SN)) +
+  geom_point(p3.Acc.Asc.long.con.2, mapping = aes(x=cPE, y=aCorr, color=SN), size = 3, alpha = .22, show.legend = FALSE) +
+  coord_cartesian(ylim = c(20, 100), clip = "on") +
+  labs(x = "Prediction Error", y = "Association Accuracy (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # ggtitle("List 2 AM of Correct Source (Con)") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border=element_blank(),
+        plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm"))
+ggpubr::ggarrange(p3.Asc.all.plot4.2.2, p3.Asc.exp.plot4.2.2, p3.Asc.con.plot4.2.2, ncol=3, labels=c("A) All Group", "B) Experimental", "C) Control"))
+```
+
+<br>
+  
+집단과 예측 오류를 요인으로 하는 2 X 4 혼합 요인 분산분석을 수행하였다.
+
+<br>
+  
+```{r, warning=FALSE, message=FALSE}
+p3.Acc.all.aov.Asc.2 <- aov_ez(id = "SN", dv = "aCorr", data = p3.Acc.Asc.long.all.2, between = "Btw", within = "cPE")
+anova(p3.Acc.all.aov.Asc.2, es = "pes") %>% kable(digits=3)
+```
+
+분석 결과, 모든 효과가 유의하지 않았다.
+
+<br>
+
+***
+```{r, eval=FALSE, message=FALSE, warning=FALSE}
+save(list=ls(), file="memudt_pe_pilot.Rdata")
+```
+***
+
+<br>
+
+# PLOT
+
+## Day 1 & 2. Association Memory Performance
+
+```{r, fig.height = 6, fig.width = 8}
+p12.L.g.L1 <- p12.L.g.all %>% filter(day == "day1")
+p12.L.g.L1$Btw <- factor(p12.L.g.L1$Btw, labels=c("Experimental", "Control"))
+p12.L.g.L1.plot1 <- ggplot(data=p12.L.g.L1, 
+                           aes(x=Block, y=ACC.M, ymin=ACC.M-ci, ymax=ACC.M+ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(20,100), clip = "on") +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  labs(x = "Block", y = "Accuracy (%)") +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.65, 0.35),
+        legend.title = element_blank(),
+        aspect.ratio = 0.6,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.5, 0.3, 0.3, "cm"),
+        legend.key = element_blank())
+
+p12.L.g.L2 <- p12.L.g.all %>% filter(day == "day2")
+p12.L.g.L2$Btw <- factor(p12.L.g.L2$Btw, labels=c("Experimental", "Control"))
+p12.L.g.L2.plot1 <- ggplot(data=p12.L.g.L2, 
+                           aes(x=Block, y=ACC.M, ymin=ACC.M-ci, ymax=ACC.M+ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(20,100), clip = "on") +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  labs(x = "Block", y = "Accuracy (%)") +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.65, 0.35),
+        legend.title = element_blank(),
+        aspect.ratio = 0.6,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.3, 0.3, 0.5, "cm"),
+        legend.key = element_blank())
+
+
+p12.L.rt.g.L1 <- p12.L.rt.g.all %>% filter(day == "day1")
+p12.L.rt.g.L1$Btw <- factor(p12.L.g.L1$Btw, labels=c("Experimental", "Control"))
+p12.L.rt.g.L1.plot1 <- ggplot(data=p12.L.rt.g.L1 , 
+                              aes(x=Block, y=RT.M, ymin=RT.M-ci, ymax=RT.M+ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(0,1800), clip = "on") +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  labs(x = "Block", y = "Response Time (ms)") +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.65, 0.85),
+        legend.title = element_blank(),
+        aspect.ratio = 0.6,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.5, 0.3, 0.3, "cm"),
+        legend.key = element_blank())
+
+p12.L.rt.g.L2 <- p12.L.rt.g.all %>% filter(day == "day2")
+p12.L.rt.g.L2$Btw <- factor(p12.L.g.L2$Btw, labels=c("Experimental", "Control"))
+p12.L.rt.g.L2.plot1 <- ggplot(data=p12.L.rt.g.L2 , 
+                              aes(x=Block, y=RT.M, ymin=RT.M-ci, ymax=RT.M+ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(0,1800), clip = "on") +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  scale_x_discrete(labels = c("1", "2", "3", "4")) +
+  labs(x = "Block", y = "Response Time (ms)") +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.65, 0.85),
+        legend.title = element_blank(),
+        aspect.ratio = 0.6,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.3, 0.3, 0.5, "cm"),
+        legend.key = element_blank())
+
+d1_d2_asc_all2_pilot<- ggpubr::ggarrange(p12.L.g.L1.plot1, p12.L.g.L2.plot1, p12.L.rt.g.L1.plot1, p12.L.rt.g.L2.plot1, nrow = 2, ncol=2, 
+                                 labels=c("A. List 1","B. List 2"," "," "),
+                                 hjust = -0.05, vjust=1, font.label = list(size = 20))
+d1_d2_asc_all2_pilot
+# ggsave("d1&d2_asc_all_pilot.jpg", plot = d1_d2_asc_all2_pilot, width=8, height=6, unit='in', dpi=600)
+
+```
+
+<br>
+
+## Day 3. Asymmetric Patterns of Source Misattribution
+
+```{r, fig.height = 6, fig.width = 6}
+p3.AsyPtt.long.all.p2 <- p3.AsyPtt.long.all %>% filter(cSrc != "List_3", Resp != "New")
+p3.AsyPtt.g.all.p2 <- p3.AsyPtt.g.all %>% filter(cSrc != "List_3", Resp != "New")
+p3.all.plot3.pilot <- ggplot(data=p3.AsyPtt.long.all.p2, aes(x=cSrc, y=Rsp, fill=Resp)) +
+  stat_summary(fun = mean, geom = "bar", position="dodge", na.rm = TRUE, alpha = .9, width = 0.8, colour="black", size = 1.02) +
+  geom_pointrange(data=p3.AsyPtt.g.all.p2, aes(x = cSrc, y=Rsp.M, ymin = Rsp.M-Rsp.ci, ymax = Rsp.M+Rsp.ci),
+                  position = position_dodge(0.80), color = "darkred", size = 1, show.legend = FALSE) +
+  # geom_point(data=p3.AsyPtt.g.all.p2, aes(x = cSrc, y=Rsp.M),
+                  # position = position_dodge(0.80), color = "black", size = 5, show.legend = FALSE) +
+  # geom_errorbar(data=p3.AsyPtt.g.all.p2, aes(x=cSrc, ymin = Rsp.M-Rsp.ci, ymax = Rsp.M+Rsp.ci), size = 1, width = .2, position = position_dodge(0.8)) +
+  facet_grid(.~Btw, scales="free_x", space = "free",
+             labeller = labeller(Btw = c("1" = "Experimental Group","2" = "Control Group"))) +
+  scale_x_discrete(labels=c("List 1","List 2")) +
+  scale_fill_manual(values = c("#feb24c", "#91bfdb"),
+  # scale_fill_manual(values = c("#a3d8d7", "#ed9b5d"),#a3d8d7 #72c2c8
+  # scale_fill_manual(values = c("#feb24c", "#4292c6"),
+  # scale_fill_manual(values = c("#c6d9f1", "#254061"),
+                    labels = c("Day 1 Response", "Day 2 Response")) +
+  coord_cartesian(ylim = c(0, 105), clip = "on") +
+  labs(x = "Source Response by Object List", y = "Proportion of Response (%)", fill ="Attribution") +
+  # ggtitle("Source Memory Response") +
+  theme_bw(base_size = 15) +
+  theme(axis.title = element_text(face = "bold", size = 16, color = "black"),
+        axis.text = element_text(face = "plain", hjust = 0.5, size = 15, color = "black"),
+        axis.line=element_line(),
+        strip.text.x = element_text(face = "plain", size = 15, color = "black"),
+        strip.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.spacing=unit(1, "lines"),
+        plot.margin = margin(1, 0.3, 1, 0.3, "cm"), 
+        # plot.title = element_text(hjust = 0.5),
+        legend.position=c(0.8, 0.85))
+p3.all.plot3.pilot
+# ggsave("d3_Src_asyptt_all_pilot3.jpg", plot = p3.all.plot3.pilot, width=6, height=6, unit='in', dpi=600)
+```
+
+<br>
+
+## Day 3. Non-monotonic Patterns of Memory Updating
+
+```{r, fig.height = 6, fig.width = 6}
+# Intrusion
+p3.Intru.g.all.p3 <- p3.Intru.g.all
+p3.Intru.g.all.p3$Btw <- factor(p3.Intru.g.all.p3$Btw, labels=c("Experimental", "Control"))
+
+p3.plot2.1.all.p3.pilot <- ggplot(data=p3.Intru.g.all.p3, 
+                            aes(x=cPE, y=Intru.M, ymin=Intru.M-Intru.ci, ymax=Intru.M+Intru.ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(0,70), clip = "on") +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  labs(x = "Prediction Error", y = "Intrusion (%)") +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.75, 0.85),
+        legend.title = element_blank(),
+        aspect.ratio = 1,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.3, 0.3, 0.3, "cm"),
+        legend.key = element_blank())
+p3.plot2.1.all.p3.pilot
+
+# ggsave("d3_Src_nmon_int_pilot2.jpg", plot = p3.plot2.1.all.p3.pilot, width=6, height=6, unit='in', dpi=600)
+```
+
+
+```{r, fig.height=12, fig.width=12}
+p3.Acc.g.all.1.p3 <- p3.Acc.g.all.1
+p3.Acc.g.all.1.p3$Btw <- factor(p3.Acc.g.all.1.p3$Btw, labels=c("Experimental", "Control"))
+p3.plot2.2.all.1.p3 <- ggplot(data=p3.Acc.g.all.1.p3, 
+                              aes(x=cPE, y=Acc.M, ymin=Acc.M-Acc.ci, ymax=Acc.M+Acc.ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(40,100), clip = "on") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  labs(x = "Prediction Error", y = "List 1 Correct (%)") +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.75, 0.25),
+        legend.title = element_blank(),
+        aspect.ratio = 1,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.5, 0.3, 0.3, "cm"),
+        legend.key = element_blank())
+# p3.plot2.2.all.1.p3
+
+# source confusion
+p3.Err.g.all.p3 <- p3.Err.g.all
+p3.Err.g.all.p3$Btw <- factor(p3.Err.g.all.p3$Btw, labels=c("Experimental", "Control"))
+
+p3.plot2.3.all.1.p3 <- ggplot(data=p3.Err.g.all.p3, 
+                              aes(x=cPE, y=Err.M, ymin=Err.M-Err.ci, ymax=Err.M+Err.ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(0,70), clip = "on") +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  labs(x = "Prediction Error", y = "Source Confusion (%)") +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.75, 0.85),
+        legend.title = element_blank(),
+        aspect.ratio = 1,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.3, 0.3, 0.5, "cm"),
+        legend.key = element_blank())
+# p3.plot2.3.all.1.p3
+
+# List 2 Correct
+p3.Acc.g.all.2.p3 <- p3.Acc.g.all.2
+p3.Acc.g.all.2.p3$Btw <- factor(p3.Acc.g.all.2.p3$Btw, labels=c("Experimental", "Control"))
+
+p3.plot2.2.all.2.p3 <- ggplot(data=p3.Acc.g.all.2.p3, 
+                              aes(x=cPE, y=Acc.M, ymin=Acc.M-Acc.ci, ymax=Acc.M+Acc.ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(40,100), clip = "on") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  labs(x = "Prediction Error", y = "List 2 Correct (%)") +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.75, 0.25),
+        legend.title = element_blank(),
+        aspect.ratio = 1,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.5, 0.3, 0.3, "cm"),
+        legend.key = element_blank())
+# p3.plot2.2.all.2.p3
+
+# Intrusion
+p3.Intru.g.all.p3 <- p3.Intru.g.all
+p3.Intru.g.all.p3$Btw <- factor(p3.Intru.g.all.p3$Btw, labels=c("Experimental", "Control"))
+
+p3.plot2.1.all.p3 <- ggplot(data=p3.Intru.g.all.p3, 
+                            aes(x=cPE, y=Intru.M, ymin=Intru.M-Intru.ci, ymax=Intru.M+Intru.ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(0,70), clip = "on") +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  labs(x = "Prediction Error", y = "Intrusion (%)") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.75, 0.85),
+        legend.title = element_blank(),
+        aspect.ratio = 1,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.3, 0.3, 0.5, "cm"),
+        legend.key = element_blank())
+# p3.plot2.1.all.p3
+
+d3_nmon_src<- ggpubr::ggarrange(p3.plot2.2.all.1.p3, p3.plot2.2.all.2.p3, p3.plot2.3.all.1.p3, p3.plot2.1.all.p3, nrow = 2, ncol=2, 
+                          labels=c("A","B","C","D"),
+                          hjust = -0.05, vjust=1, font.label = list(size = 20))
+d3_nmon_src
+
+# ggsave("d3_Src_nmon_all_pilot3.jpg", plot = d3_nmon_src, width=12, height=12, unit='in', dpi=600)
+
+```
+
+```{r, fig.height=6, fig.width=6}
+p3.US.g.all.p3 <- p3.US.g.all
+p3.US.g.all.p3$Btw <- factor(p3.US.g.all.p3$Btw, labels=c("Experimental", "Control"))
+
+p3.plot5.1.all.p3 <- ggplot(data=p3.US.g.all.p3, 
+                            aes(x=cPE, y=US.M, ymin=US.M-US.ci, ymax=US.M+US.ci, color=Btw, shape=Btw)) +
+  geom_point(size = 4, position = position_dodge(.3)) +
+  geom_errorbar(width = .2, position = position_dodge(.3)) +
+  geom_line(aes(group = Btw), position = position_dodge(.3)) + 
+  scale_color_manual(values = c("red", "black")) +
+  # scale_shape_manual(values = c("red", "black"), labels = c("Experimental", "Control")) +
+  coord_cartesian(ylim = c(-50,50), clip = "on") +
+  # scale_y_continuous(breaks = seq(0,80)) +
+  labs(x = "Prediction Error", y = "Updating Score") +
+  scale_x_discrete(labels = c("PE 1", "PE 2", "PE 3", "PE 4")) +
+  theme_bw(base_size = 18) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.75, 0.20),
+        legend.title = element_blank(),
+        aspect.ratio = 1,
+        legend.background = element_blank(),
+        plot.margin = margin(1, 0.3, 0.3, 0.3, "cm"),
+        legend.key = element_blank())
+p3.plot5.1.all.p3
+
+# ggsave("d3_Src_nmon_US_pilot3.jpg", plot = p3.plot5.1.all.p3, width=6, height=6, unit='in', dpi=600)
+```
+
+
+****
+  
+<br><br>
+  
+# SessionInfo
+
+```{r, warning=FALSE, message=FALSE}
+sessionInfo()
+```
+
